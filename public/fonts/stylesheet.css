@@ -1,0 +1,90 @@
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-Black.woff2') format('woff2'),
+        url('Ramboia-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-Medium.woff2') format('woff2'),
+        url('Ramboia-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-Italic.woff2') format('woff2'),
+        url('Ramboia-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-Bold.woff2') format('woff2'),
+        url('Ramboia-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-ExtraBoldItalic.woff2') format('woff2'),
+        url('Ramboia-ExtraBoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-MediumItalic.woff2') format('woff2'),
+        url('Ramboia-MediumItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-BlackItalic.woff2') format('woff2'),
+        url('Ramboia-BlackItalic.woff') format('woff');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-ExtraBold.woff2') format('woff2'),
+        url('Ramboia-ExtraBold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-BoldItalic.woff2') format('woff2'),
+        url('Ramboia-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Ramboia';
+    src: url('Ramboia-Regular.woff2') format('woff2'),
+        url('Ramboia-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
