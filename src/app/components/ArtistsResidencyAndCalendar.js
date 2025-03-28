@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
-import Lenis from "@studio-freight/lenis";
 import Calendar from "@/app/components/Calendar";
 
 export default function ArtistsResidencyAndCalendar() {
@@ -58,7 +57,7 @@ export default function ArtistsResidencyAndCalendar() {
             x: h2XPosition,
             pointerEvents: isH2Visible ? "auto" : "none",
           }}
-          transition={{ type: "spring", stiffness: 100, damping: 20 }}
+          transition={{ type: "spring", stiffness: 200, damping: 20 }}
         >
           O projecto MANIF – Coimbra nasce num processo de escuta activa, olhar e pensamento atento, crítico e construtivo sobre o Lugar da Justiça no nosso território, e na urgência demonstrada pelo seu corpo interno de profissionais em tecer novas pontes de encontro transversais a outras áreas do conhecimento e reforçar alicerces no diálogo com toda a sociedade. A heterogeneidade das comunidades, a crise ambiental e climática, o crescente espaço de questionamento público sobre as diferentes formas de Ser e Estar no mundo global e glocal, impelem a exigência de tornar estes espaços de representação, decisão e julgamento, em lugares inequivocamente transparentes e abertos.
         </motion.h2>

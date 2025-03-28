@@ -12,9 +12,10 @@ export default function FullWidthWord() {
     // Initialize Lenis for smooth scrolling
     useEffect(() => {
         const lenis = new Lenis({
-            duration: 4, // Adjust scroll speed
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // Smooth easing function
-          smooth: true, // Enable smooth scrolling
+            smooth: true,        // Enable smooth scrolling
+            lerp: 0.03,          // Extremely slow interpolation (no fast jumps)
+            duration: 4,         // Extremely slow scroll duration (long time to scroll)
+            easing: (t) => t,    // Linear easing (no easing curve)
 
         });
 
