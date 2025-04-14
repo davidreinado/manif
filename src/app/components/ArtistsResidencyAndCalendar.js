@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import Calendar from "@/app/components/Calendar";
 
-export default function ArtistsResidencyAndCalendar() {
+export default function ArtistsResidencyAndCalendar({home}) {
   const [initialFontSize, setInitialFontSize] = useState("10vh");
   const [isH2Visible, setIsH2Visible] = useState(false);
   // const [isScrollEnabled, setIsScrollEnabled] = useState(false);
@@ -36,7 +36,7 @@ export default function ArtistsResidencyAndCalendar() {
   }, []);
 
   return (
-    <div ref={containerRef} className="font-ramboia h-[200vh] flex flex-col justify-between text-start ml-[45px] relative">
+    <div ref={containerRef} className="font-ramboia h-[200vh] flex flex-col justify-between text-start mx-[42px] relative">
       <div ref={textRef} className="sticky top-0 h-screen flex items-start justify-start">
         <motion.h3
           className="font-bold italic leading-none mr-[45px]"
@@ -51,8 +51,9 @@ export default function ArtistsResidencyAndCalendar() {
       </div>
 
       <div className="h-screen flex justify-between z-10">
+        <div className="w-1/2 ">
         <motion.h2
-          className="w-1/2 text-[1.95rem] font-medium font-ramboia sticky mt-24 pr-4 top-0"
+          className="text-[1.95rem] font-medium font-ramboia mt-24 pr-[21px] sticky top-[60px]"
           style={{
             x: h2XPosition,
             pointerEvents: isH2Visible ? "auto" : "none",
@@ -61,14 +62,15 @@ export default function ArtistsResidencyAndCalendar() {
         >
           O projecto MANIF – Coimbra nasce num processo de escuta activa, olhar e pensamento atento, crítico e construtivo sobre o Lugar da Justiça no nosso território, e na urgência demonstrada pelo seu corpo interno de profissionais em tecer novas pontes de encontro transversais a outras áreas do conhecimento e reforçar alicerces no diálogo com toda a sociedade. A heterogeneidade das comunidades, a crise ambiental e climática, o crescente espaço de questionamento público sobre as diferentes formas de Ser e Estar no mundo global e glocal, impelem a exigência de tornar estes espaços de representação, decisão e julgamento, em lugares inequivocamente transparentes e abertos.
         </motion.h2>
+        </div>
 
         <motion.div
-          className="w-1/2 sticky top-0"
+          className="w-1/2"
           style={{
             x: calendarXPosition,
           }}
         >
-          <Calendar />
+          <Calendar home={home} />
         </motion.div>
       </div>
     </div>

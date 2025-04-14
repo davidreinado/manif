@@ -3,6 +3,5 @@
 import dynamic from "next/dynamic";
 
 export const components = {
-  agenda: dynamic(() => import("./Agenda")),
   rich_text: dynamic(() => import("./RichText")),
 };

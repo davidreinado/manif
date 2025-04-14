@@ -4,14 +4,215 @@ import type * as prismic from "@prismicio/client";
 
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
-type PageDocumentDataSlicesSlice = AgendaSlice;
+/**
+ * Item in *Home → Agenda*
+ */
+export interface PageDocumentDataAgendaItem {
+  /**
+   * Agente field in *Home → Agenda*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].agente
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  agente: prismic.KeyTextField;
+
+  /**
+   * Ano field in *Home → Agenda*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].ano
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  ano: prismic.SelectField<"2025" | "2026" | "2027" | "2029" | "2030">;
+
+  /**
+   * Mês field in *Home → Agenda*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].mes
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  mes: prismic.SelectField<
+    | "Janeiro"
+    | "Feveiro"
+    | "Março"
+    | "Abril"
+    | "Maio"
+    | "Junho"
+    | "Julho"
+    | "Agosto"
+    | "Setembro"
+    | "Otubro"
+    | "Novembro"
+    | "Dezembro"
+  >;
+
+  /**
+   * Data Inicial field in *Home → Agenda*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].data_inicial
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  data_inicial: prismic.SelectField<
+    | "1"
+    | "2"
+    | "3"
+    | "4"
+    | "5"
+    | "6"
+    | "7"
+    | "9"
+    | "10"
+    | "11"
+    | "12"
+    | "13"
+    | "14"
+    | "15"
+    | "16"
+    | "17"
+    | "18"
+    | "19"
+    | "20"
+    | "21"
+    | "22"
+    | "23"
+    | "24"
+    | "25"
+    | "26"
+    | "27"
+    | "28"
+    | "29"
+    | "30"
+    | "31"
+  >;
+
+  /**
+   * Data Final field in *Home → Agenda*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].data_final
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  data_final: prismic.SelectField<
+    | "1"
+    | "2"
+    | "3"
+    | "4"
+    | "5"
+    | "6"
+    | "7"
+    | "8"
+    | "9"
+    | "10"
+    | "11"
+    | "12"
+    | "13"
+    | "14"
+    | "15"
+    | "16"
+    | "17"
+    | "18"
+    | "19"
+    | "20"
+    | "21"
+    | "22"
+    | "23"
+    | "24"
+    | "25"
+    | "26"
+    | "27"
+    | "28"
+    | "29"
+    | "30"
+    | "31"
+  >;
+
+  /**
+   * Horas field in *Home → Agenda*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].horas
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  horas: prismic.KeyTextField;
+
+  /**
+   * Distrito field in *Home → Agenda*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].distrito
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  distrito: prismic.KeyTextField;
+
+  /**
+   * Localidade field in *Home → Agenda*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].localidade
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  localidade: prismic.KeyTextField;
+
+  /**
+   * Tipo field in *Home → Agenda*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].tipo
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  tipo: prismic.SelectField<"Residências" | "Obras" | "Mediação">;
+
+  /**
+   * Título field in *Home → Agenda*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].titulo
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  titulo: prismic.RichTextField;
+
+  /**
+   * Subtítulo field in *Home → Agenda*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].subtitulo
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  subtitulo: prismic.RichTextField;
+
+  /**
+   * Local field in *Home → Agenda*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].local
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  local: prismic.RichTextField;
+}
+
+type PageDocumentDataSlicesSlice = never;
 
 /**
- * Content for Page documents
+ * Content for Home documents
  */
 interface PageDocumentData {
   /**
-   * Title field in *Page*
+   * Title field in *Home*
    *
    * - **Field Type**: Title
    * - **Placeholder**: *None*
@@ -22,7 +223,18 @@ interface PageDocumentData {
   title: prismic.TitleField;
 
   /**
-   * Slice Zone field in *Page*
+   * Agenda field in *Home*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  agenda: prismic.GroupField<Simplify<PageDocumentDataAgendaItem>>;
+
+  /**
+   * Slice Zone field in *Home*
    *
    * - **Field Type**: Slice Zone
    * - **Placeholder**: *None*
@@ -31,7 +243,7 @@ interface PageDocumentData {
    * - **Documentation**: https://prismic.io/docs/field#slices
    */
   slices: prismic.SliceZone<PageDocumentDataSlicesSlice> /**
-   * Meta Title field in *Page*
+   * Meta Title field in *Home*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A title of the page used for social media and search engines
@@ -42,7 +254,7 @@ interface PageDocumentData {
   meta_title: prismic.KeyTextField;
 
   /**
-   * Meta Description field in *Page*
+   * Meta Description field in *Home*
    *
    * - **Field Type**: Text
    * - **Placeholder**: A brief summary of the page
@@ -53,7 +265,7 @@ interface PageDocumentData {
   meta_description: prismic.KeyTextField;
 
   /**
-   * Meta Image field in *Page*
+   * Meta Image field in *Home*
    *
    * - **Field Type**: Image
    * - **Placeholder**: *None*
@@ -65,7 +277,7 @@ interface PageDocumentData {
 }
 
 /**
- * Page document from Prismic
+ * Home document from Prismic
  *
  * - **API ID**: `page`
  * - **Repeatable**: `true`
@@ -76,94 +288,21 @@ interface PageDocumentData {
 export type PageDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<PageDocumentData>, "page", Lang>;
 
-export type AllDocumentTypes = PageDocument;
+interface UidDocumentData {}
 
 /**
- * Item in *Agenda → Default → Primary → Evento*
- */
-export interface AgendaSliceDefaultPrimaryEventoItem {
-  /**
-   * Cor field in *Agenda → Default → Primary → Evento*
-   *
-   * - **Field Type**: Select
-   * - **Placeholder**: *None*
-   * - **API ID Path**: agenda.default.primary.evento[].cor
-   * - **Documentation**: https://prismic.io/docs/field#select
-   */
-  cor: prismic.SelectField<"Laranja" | "Rosa" | "Amarelo">;
-
-  /**
-   * Datas field in *Agenda → Default → Primary → Evento*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: agenda.default.primary.evento[].datas
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  datas: prismic.KeyTextField;
-
-  /**
-   * Nome field in *Agenda → Default → Primary → Evento*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: agenda.default.primary.evento[].nome
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  nome: prismic.RichTextField;
-
-  /**
-   * Tipo field in *Agenda → Default → Primary → Evento*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: agenda.default.primary.evento[].tipo
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  tipo: prismic.KeyTextField;
-}
-
-/**
- * Primary content in *Agenda → Default → Primary*
- */
-export interface AgendaSliceDefaultPrimary {
-  /**
-   * Evento field in *Agenda → Default → Primary*
-   *
-   * - **Field Type**: Group
-   * - **Placeholder**: *None*
-   * - **API ID Path**: agenda.default.primary.evento[]
-   * - **Documentation**: https://prismic.io/docs/field#group
-   */
-  evento: prismic.GroupField<Simplify<AgendaSliceDefaultPrimaryEventoItem>>;
-}
-
-/**
- * Default variation for Agenda Slice
+ * uid document from Prismic
  *
- * - **API ID**: `default`
- * - **Description**: Default
- * - **Documentation**: https://prismic.io/docs/slice
- */
-export type AgendaSliceDefault = prismic.SharedSliceVariation<
-  "default",
-  Simplify<AgendaSliceDefaultPrimary>,
-  never
->;
-
-/**
- * Slice variation for *Agenda*
- */
-type AgendaSliceVariation = AgendaSliceDefault;
-
-/**
- * Agenda Shared Slice
+ * - **API ID**: `uid`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
  *
- * - **API ID**: `agenda`
- * - **Description**: Agenda
- * - **Documentation**: https://prismic.io/docs/slice
+ * @typeParam Lang - Language API ID of the document.
  */
-export type AgendaSlice = prismic.SharedSlice<"agenda", AgendaSliceVariation>;
+export type UidDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<UidDocumentData>, "uid", Lang>;
+
+export type AllDocumentTypes = PageDocument | UidDocument;
 
 /**
  * Primary content in *RichText → Default → Primary*
@@ -233,13 +372,11 @@ declare module "@prismicio/client" {
     export type {
       PageDocument,
       PageDocumentData,
+      PageDocumentDataAgendaItem,
       PageDocumentDataSlicesSlice,
+      UidDocument,
+      UidDocumentData,
       AllDocumentTypes,
-      AgendaSlice,
-      AgendaSliceDefaultPrimaryEventoItem,
-      AgendaSliceDefaultPrimary,
-      AgendaSliceVariation,
-      AgendaSliceDefault,
       RichTextSlice,
       RichTextSliceDefaultPrimary,
       RichTextSliceVariation,
