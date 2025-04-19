@@ -9,7 +9,7 @@
       "uid": {
         "type": "UID",
         "config": {
-          "label": "UID",
+          "label": "home",
           "placeholder": ""
         }
       },
@@ -20,6 +20,15 @@
           "placeholder": "",
           "allowTargetBlank": true,
           "single": "heading1"
+        }
+      },
+      "bio": {
+        "type": "StructuredText",
+        "config": {
+          "label": "Bio",
+          "placeholder": "",
+          "allowTargetBlank": true,
+          "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
         }
       },
       "agenda": {
@@ -99,7 +108,8 @@
                   "28",
                   "29",
                   "30",
-                  "31"
+                  "31",
+                  "8"
                 ]
               }
             },
@@ -197,6 +207,136 @@
                 "placeholder": "",
                 "allowTargetBlank": true,
                 "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            }
+          }
+        }
+      },
+      "Apoios": {
+        "type": "Group",
+        "config": {
+          "label": "Apoios",
+          "repeat": true,
+          "fields": {
+            "local": {
+              "type": "Text",
+              "config": {
+                "label": "Local",
+                "placeholder": ""
+              }
+            },
+            "texto": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto",
+                "placeholder": "",
+                "allowTargetBlank": true,
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            },
+            "texto_2": {
+              "type": "StructuredText",
+              "config": {
+                "label": "Texto 2",
+                "placeholder": "",
+                "allowTargetBlank": true,
+                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
+              }
+            },
+            "imagem_1": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 1",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_2": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 2",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_3": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 3",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_4": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 4",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_5": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 5",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_6": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 6",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_7": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 7",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_8": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 8",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_9": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 9",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_10": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 10",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_11": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 11",
+                "constraint": {},
+                "thumbnails": []
+              }
+            },
+            "imagem_12": {
+              "type": "Image",
+              "config": {
+                "label": "Imagem 12",
+                "constraint": {},
+                "thumbnails": []
               }
             }
           }

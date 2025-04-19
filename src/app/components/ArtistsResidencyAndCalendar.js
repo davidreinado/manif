@@ -1,12 +1,18 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import Calendar from "@/app/components/Calendar";
+import EventItem from "./EventItem"; // Assuming you have an EventItem component
+import { PrismicRichText } from "./PrismicRichText";
 
-export default function ArtistsResidencyAndCalendar({home}) {
+export default function ArtistsResidencyAndCalendar({
+  home,
+  selectedType,
+  setSelectedType,
+  activeButton,
+}) {
   const [initialFontSize, setInitialFontSize] = useState("10vh");
   const [isH2Visible, setIsH2Visible] = useState(false);
-  // const [isScrollEnabled, setIsScrollEnabled] = useState(false);
   const containerRef = useRef(null);
   const textRef = useRef(null);
 
@@ -15,7 +21,7 @@ export default function ArtistsResidencyAndCalendar({home}) {
     offset: ["start start", "end end"],
   });
 
-  const marginTop = useTransform(scrollYProgress, [0, 0.5], ["0px", "40px"]);
+  const marginTop = useTransform(scrollYProgress, [0, 0.5], ["0px", "52px"]);
   const fontSize = useTransform(scrollYProgress, [0, 1], [initialFontSize, "20px"]);
   const h2XPosition = useTransform(scrollYProgress, [0.8, 1], ["-130%", "0%"]);
   const calendarXPosition = useTransform(scrollYProgress, [0.5, 1], ["100%", "0%"]);
@@ -51,28 +57,95 @@ export default function ArtistsResidencyAndCalendar({home}) {
       </div>
 
       <div className="h-screen flex justify-between z-10">
-        <div className="w-1/2 ">
-        <motion.h2
-          className="text-[1.95rem] font-medium font-ramboia mt-24 pr-[21px] sticky top-[60px]"
-          style={{
-            x: h2XPosition,
-            pointerEvents: isH2Visible ? "auto" : "none",
-          }}
-          transition={{ type: "spring", stiffness: 200, damping: 20 }}
-        >
-          O projecto MANIF – Coimbra nasce num processo de escuta activa, olhar e pensamento atento, crítico e construtivo sobre o Lugar da Justiça no nosso território, e na urgência demonstrada pelo seu corpo interno de profissionais em tecer novas pontes de encontro transversais a outras áreas do conhecimento e reforçar alicerces no diálogo com toda a sociedade. A heterogeneidade das comunidades, a crise ambiental e climática, o crescente espaço de questionamento público sobre as diferentes formas de Ser e Estar no mundo global e glocal, impelem a exigência de tornar estes espaços de representação, decisão e julgamento, em lugares inequivocamente transparentes e abertos.
-        </motion.h2>
+        {/* Left Side: Text or Apoios */}
+        <div className="w-1/2">
+          {activeButton === "Sobre" && (
+            <motion.div
+              className="text-[1.95rem] font-medium font-ramboia mt-24 pr-[21px] sticky top-[60px]"
+              style={{
+                x: h2XPosition,
+                pointerEvents: isH2Visible ? "auto" : "none",
+              }}
+              transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            >
+              {home?.data.bio && (
+                <PrismicRichText
+                  field={home?.data.bio}
+                  components={{
+                    paragraph: ({ children }) => (
+                      <h3>{children}</h3>
+                    ),
+                  }}
+                />
+              )}
+            </motion.div>
+          )}
+
+          {activeButton === "Apoios" && home?.data.Apoios?.length > 0 && (
+            <motion.div className="text-[1.2rem] font-medium font-ramboia mt-24 pr-[21px] sticky top-[60px]">
+              <AnimatePresence>
+                {home.data.Apoios.map((apoio, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.125 }}
+                    className="mb-8"
+                  >
+                    <div className="flex w-full gap-[14px]">
+                      {apoio.texto?.map((para, idx) => (
+                        <p key={idx} className="mb-2 whitespace-pre-wrap">
+                          {para.text}
+                        </p>
+                      ))}
+
+                      {apoio.texto_2?.map((para, idx) => (
+                        <p key={idx} className="mb-2 whitespace-pre-wrap">
+                          {para.text}
+                        </p>
+                      ))}
+                    </div>
+                    <div className="flex">
+                      {[...Array(12)].map((_, i) => {
+                        const img = apoio[`imagem_${i + 1}`];
+                        return img?.url ? (
+                          <img
+                            key={i}
+                            src={img.url}
+                            alt={img.alt || ""}
+                            className="my-4 h-[80px] grayscale"
+                          />
+                        ) : null;
+                      })}
+                    </div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          )}
         </div>
 
-        <motion.div
-          className="w-1/2"
-          style={{
-            x: calendarXPosition,
-          }}
-        >
-          <Calendar home={home} />
+        {/* Right Side: Calendar */}
+        <motion.div className="w-1/2" style={{ x: calendarXPosition }}>
+          <Calendar home={home} selectedType={selectedType} setSelectedType={setSelectedType} />
         </motion.div>
       </div>
+
+      {/* Event Items Section */}
+      <AnimatePresence>
+        {home?.data?.Eventos?.map((event, index) => (
+          <motion.div
+            key={event.id ?? `event-${index}`}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.125 }}
+          >
+            <EventItem event={event} />
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </div>
   );
 }

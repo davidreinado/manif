@@ -138,13 +138,14 @@ html {
 *::-webkit-scrollbar
 {
 	width: 8px;
+	height: 8px;
 	background-color: #fff;
 }
 
 *::-webkit-scrollbar-thumb
 {
-	border-radius: 16px;
-	background-color: #D9D9D9;
+	border-radius: 8px;
+	background-color: #756D47;
 }
 
 .text-link {
@@ -160,4 +161,12 @@ html {
 
   .text-link.active {
     font-variation-settings: "wght" 700;
+  }
+
+  ::-moz-selection { /* Code for Firefox */
+    color: #FF5416;
+  }
+  
+  ::selection {
+    color: #FF5416;
   }
