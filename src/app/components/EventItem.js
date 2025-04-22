@@ -1,6 +1,6 @@
 import { PrismicRichText } from "@prismicio/react";
 
-function EventItem({ event }) {
+export default function EventItem({ event }) {
     return (
       <div className="border-b pb-4 mb-4">
         <div className="flex items-stretch gap-[14px]">
