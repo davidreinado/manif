@@ -1,3 +1,5 @@
+import { PrismicRichText } from "@prismicio/react";
+
 function EventItem({ event }) {
     return (
       <div className="border-b pb-4 mb-4">
