@@ -32,7 +32,6 @@ export default async function Index() {
   const home = await client.getByUID("page", "home");
 
   return <>
-    {/* <h1 className="font-cc ">MANIF</h1> */}
     <div>
       <div className="w-[14px] h-[14px] absolute left-[14px] top-[14px] bg-black"></div>
       <div className="w-[14px] h-[14px] absolute right-[14px] top-[14px] bg-black"></div>

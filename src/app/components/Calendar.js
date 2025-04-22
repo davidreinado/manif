@@ -83,10 +83,10 @@ export default function Calendar({ home, selectedType, setSelectedType }) {
   };
 
   return (
-    <div className="w-full py-[14px] pl-[21px] flex flex-col lg:flex-row">
+    <div className="w-full py-[14px] pl-0 md:pl-[21px] flex flex-col lg:flex-row">
       {/* Filters */}
       <div className="w-full lg:w-[20%] mb-4 lg:mb-0 lg:pr-[21px]">
-        <div className="sticky top-0 pt-[14px] h-[calc(100vh-8px)] flex flex-col">
+        <div className="hidden sticky top-0 pt-[14px] h-[calc(100vh-8px)] md:flex flex-col">
           <div className='h-[50%] mt-0'>
             <ul>
               {districts.map((district) => (
@@ -104,7 +104,7 @@ export default function Calendar({ home, selectedType, setSelectedType }) {
               ))}
             </ul>
           </div>
-          <div className='h-[50%] mt-[8px]'>
+          <div className='h-[50%] mt-[8px] hidden md:block'>
             <ul>
               {Object.entries(typeOptions).map(([value, label]) => (
                 <li key={value}>
@@ -247,9 +247,9 @@ export default function Calendar({ home, selectedType, setSelectedType }) {
 function EventItem({ event }) {
   return (
     <div className="border-b pb-4 mb-4 border-dotted">
-      <div className="flex items-stretch gap-[14px]">
-        {/* Date & Time Column */}
-        <div className="w-[25%] flex flex-col">
+      <div className="flex flex-wrap md:flex-nowrap gap-x-[14px] gap-y-[0px]">
+        {/* Date & Time Column — First on mobile */}
+        <div className="w-1/2 md:w-[25%] order-1 md:order-1 flex flex-col">
           <span className="font-cc font-bold text-[1.8rem] lowercase">
             {event.data_inicial} {event.mes}
             {event.data_final && `-${event.data_final}`}
@@ -257,8 +257,22 @@ function EventItem({ event }) {
           <span className="font-ramboia text-[1.2rem]">{event.horas}</span>
         </div>
 
-        {/* Title, Subtitle, Agente Column */}
-        <div className="w-[50%] flex flex-col">
+        {/* Location Column — Second on mobile */}
+        <div className="w-1/2 md:w-[25%] order-2 md:order-3 flex flex-col justify-between">
+          {event.local && (
+            <PrismicRichText
+              field={event.local}
+              components={{
+                paragraph: ({ children }) => (
+                  <p className="text-[1.2rem] font-ramboia">{children}</p>
+                ),
+              }}
+            />
+          )}
+        </div>
+
+        {/* Title, Subtitle, Agente Column — Full width on mobile */}
+        <div className="w-full md:w-[50%] order-3 md:order-2 flex flex-col">
           <PrismicRichText
             field={event.titulo}
             components={{
@@ -281,20 +295,6 @@ function EventItem({ event }) {
             <p className="text-[1.2rem] mt-auto">
               {event.agente}
             </p>
-          )}
-        </div>
-
-        {/* Location Column */}
-        <div className="w-[25%] flex flex-col justify-between">
-          {event.local && (
-            <PrismicRichText
-              field={event.local}
-              components={{
-                paragraph: ({ children }) => (
-                  <p className="text-[1.2rem] font-ramboia">{children}</p>
-                ),
-              }}
-            />
           )}
         </div>
       </div>

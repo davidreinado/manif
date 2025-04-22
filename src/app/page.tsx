@@ -35,7 +35,6 @@ export default async function Index() {
 
 
   return <>
-    {/* <h1 className="font-cc ">MANIF</h1> */}
     <Cerebro home={home}/>
   </>
 
