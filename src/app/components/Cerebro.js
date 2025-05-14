@@ -1,19 +1,68 @@
 "use client";
-import { useState, useRef, useEffect } from "react";
-import ManifAnimation from "@/app/components/ManifAnimation";
+import { useEffect, useRef, useState } from "react";
 import ArtistsResidencyAndCalendar from "@/app/components/ArtistsResidencyAndCalendar";
 import { motion } from "framer-motion";
+import FullWidthWord from "@/app/components/ManifAnimation";
+import { useSearchParams  } from "next/navigation";
 
-export default function Cerebro({ home }) {
+export default function Cerebro({
+  home,
+  filteredLocalidades,
+  filteredAgentes,
+  existingLocalidadeDocs,
+  children
+}) {
   const navRef = useRef(null);
   const typeRef = useRef(null);
+  const lenisControlRef = useRef(null); // Ref to FullWidthWord
+  const searchParams = useSearchParams();
+
   const [activeButton, setActiveButton] = useState("Sobre");
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
 
+  const [selectedLocalidade, setSelectedLocalidade] = useState(null);
+
+  // console.log(selectedLocalidadeFromContext)
+
   const handleButtonClick = (buttonName) => {
     setActiveButton(buttonName);
   };
+
+  useEffect(() => {
+    const checkScrollPosition = () => {
+      const isBottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
+      setIsAtBottom(isBottom);
+    };
+
+    window.addEventListener("scroll", checkScrollPosition);
+    checkScrollPosition();
+
+    return () => window.removeEventListener("scroll", checkScrollPosition);
+  }, []);
+
+
+  useEffect(() => {
+    const filter = searchParams.get('localidade');
+
+    setSelectedLocalidade(filter);
+
+    if (filter) {
+      setActiveButton("Apoios");
+    }
+    else {
+      setActiveButton("Sobre");
+    }
+  }, [searchParams]); // ✅ react to actual pathname changes
+
+
+  // ✅ Automatically activate "Apoios" if selectedLocalidade is not null
+  useEffect(() => {
+    if (selectedLocalidade) {
+      setActiveButton("Apoios");
+    }
+  }, [selectedLocalidade]);
 
   const getNavPosition = () => {
     switch (activeButton) {
@@ -39,19 +88,6 @@ export default function Cerebro({ home }) {
     }
   };
 
-  useEffect(() => {
-    const checkScrollPosition = () => {
-      const isBottom =
-        window.innerHeight + window.scrollY >= document.body.offsetHeight - 50;
-      setIsAtBottom(isBottom);
-    };
-
-    window.addEventListener("scroll", checkScrollPosition);
-    checkScrollPosition();
-
-    return () => window.removeEventListener("scroll", checkScrollPosition);
-  }, []);
-
   return (
     <div>
       {/* Layout dots */}
@@ -75,16 +111,23 @@ export default function Cerebro({ home }) {
       </div>
 
       {/* Animation & Calendar */}
-      <ManifAnimation />
+      <FullWidthWord ref={lenisControlRef} />
+
       <ArtistsResidencyAndCalendar
         home={home}
         selectedType={selectedType}
         setSelectedType={setSelectedType}
         activeButton={activeButton}
+        filteredAgentes={filteredAgentes}
+        filteredLocalidades={filteredLocalidades}
+        existingLocalidadeDocs={existingLocalidadeDocs}
+        children={children}
+        setActiveButton={setActiveButton}
       />
 
+
       {/* Bottom Buttons */}
-      {isAtBottom && (
+      {isAtBottom && selectedLocalidade != null && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -94,9 +137,8 @@ export default function Cerebro({ home }) {
         >
           <div className="w-[50%]">
             <button
-              className={`text-link ${
-                activeButton === "Sobre" ? "active text-black" : ""
-              }`}
+              className={`text-link ${activeButton === "Sobre" ? "active text-black" : ""
+                }`}
               onClick={() => handleButtonClick("Sobre")}
               onMouseEnter={() => handleButtonClick("Sobre")}
             >
@@ -105,9 +147,8 @@ export default function Cerebro({ home }) {
           </div>
           <div className="w-[50%]">
             <button
-              className={`text-link ${
-                activeButton === "Apoios" ? "active text-black" : ""
-              }`}
+              className={`text-link ${activeButton === "Apoios" ? "active text-black" : ""
+                }`}
               onClick={() => handleButtonClick("Apoios")}
               onMouseEnter={() => handleButtonClick("Apoios")}
             >

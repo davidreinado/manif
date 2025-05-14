@@ -1,0 +1,20 @@
+[
+	{
+		"__TYPE__": "SharedSliceContent",
+		"variation": "default",
+		"primary": {
+			"quote_text": {
+				"__TYPE__": "StructuredTextContent",
+				"value": [
+					{
+						"type": "paragraph",
+						"content": {
+							"text": "Non eu esse ullamco nisi aliquip. Nostrud aliquip veniam velit voluptate consectetur ex sit. Voluptate ut sint sunt."
+						}
+					}
+				]
+			}
+		},
+		"items": []
+	}
+]

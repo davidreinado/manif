@@ -1,0 +1,41 @@
+{
+  "format": "custom",
+  "id": "filtro",
+  "label": "Filtro",
+  "repeatable": true,
+  "status": true,
+  "json": {
+    "Main": {
+      "uid": {
+        "type": "UID",
+        "config": {
+          "label": "UID"
+        }
+      },
+      "titulo": {
+        "type": "Text",
+        "config": {
+          "label": "Título",
+          "placeholder": ""
+        }
+      },
+      "slices": {
+        "type": "Slices",
+        "fieldset": "Slice Zone",
+        "config": {
+          "choices": {
+            "full_width_image": {
+              "type": "SharedSlice"
+            },
+            "two_column_text": {
+              "type": "SharedSlice"
+            },
+            "quote": {
+              "type": "SharedSlice"
+            }
+          }
+        }
+      }
+    }
+  }
+}

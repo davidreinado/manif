@@ -1,0 +1,27 @@
+{
+  "type": "SharedSlice",
+  "id": "quote",
+  "name": "Quote",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Single quote text field, often styled in italic.",
+      "version": "initial",
+      "imageUrl": "",
+      "docURL": "...",
+      "primary": {
+        "quote_text": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Quote Text",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em,hyperlink,image"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

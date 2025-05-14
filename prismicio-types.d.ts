@@ -5,6 +5,220 @@ import type * as prismic from "@prismicio/client";
 type Simplify<T> = { [KeyType in keyof T]: T[KeyType] };
 
 /**
+ * Content for Carrossel documents
+ */
+interface CarrosselDocumentData {
+  /**
+   * Imagem field in *Carrossel*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: carrossel.imagem
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem: prismic.ImageField<never>;
+}
+
+/**
+ * Carrossel document from Prismic
+ *
+ * - **API ID**: `carrossel`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type CarrosselDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<
+    Simplify<CarrosselDocumentData>,
+    "carrossel",
+    Lang
+  >;
+
+type FiltroDocumentDataSlicesSlice =
+  | FullWidthImageSlice
+  | TwoColumnTextSlice
+  | QuoteSlice;
+
+/**
+ * Content for Filtro documents
+ */
+interface FiltroDocumentData {
+  /**
+   * Título field in *Filtro*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filtro.titulo
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  titulo: prismic.KeyTextField;
+
+  /**
+   * Slice Zone field in *Filtro*
+   *
+   * - **Field Type**: Slice Zone
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filtro.slices[]
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#slices
+   */
+  slices: prismic.SliceZone<FiltroDocumentDataSlicesSlice>;
+}
+
+/**
+ * Filtro document from Prismic
+ *
+ * - **API ID**: `filtro`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type FiltroDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<FiltroDocumentData>, "filtro", Lang>;
+
+/**
+ * Content for Local documents
+ */
+interface LocalDocumentData {
+  /**
+   * Título field in *Local*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.titulo
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  titulo: prismic.KeyTextField;
+
+  /**
+   * Imagem 1 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_1
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_1: prismic.ImageField<never>;
+
+  /**
+   * Imagem 2 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_2
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_2: prismic.ImageField<never>;
+
+  /**
+   * Imagem 3 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_3
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_3: prismic.ImageField<never>;
+
+  /**
+   * Imagem 4 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_4
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_4: prismic.ImageField<never>;
+
+  /**
+   * Imagem 5 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_5
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_5: prismic.ImageField<never>;
+
+  /**
+   * Imagem 6 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_6
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_6: prismic.ImageField<never>;
+
+  /**
+   * Imagem 7 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_7
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_7: prismic.ImageField<never>;
+
+  /**
+   * Imagem 8 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_8
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_8: prismic.ImageField<never>;
+
+  /**
+   * Imagem 9 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_9
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_9: prismic.ImageField<never>;
+
+  /**
+   * Imagem 10 field in *Local*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.imagem_10
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem_10: prismic.ImageField<never>;
+}
+
+/**
+ * Local document from Prismic
+ *
+ * - **API ID**: `local`
+ * - **Repeatable**: `true`
+ * - **Documentation**: https://prismic.io/docs/custom-types
+ *
+ * @typeParam Lang - Language API ID of the document.
+ */
+export type LocalDocument<Lang extends string = string> =
+  prismic.PrismicDocumentWithUID<Simplify<LocalDocumentData>, "local", Lang>;
+
+/**
  * Item in *Home → Agenda*
  */
 export interface PageDocumentDataAgendaItem {
@@ -480,51 +694,180 @@ interface UidDocumentData {}
 export type UidDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<UidDocumentData>, "uid", Lang>;
 
-export type AllDocumentTypes = PageDocument | UidDocument;
+export type AllDocumentTypes =
+  | CarrosselDocument
+  | FiltroDocument
+  | LocalDocument
+  | PageDocument
+  | UidDocument;
 
 /**
- * Primary content in *RichText → Default → Primary*
+ * Item in *Carrossel → Default → Primary → Imagem*
  */
-export interface RichTextSliceDefaultPrimary {
+export interface FullWidthImageSliceDefaultPrimaryImagemItem {
   /**
-   * Content field in *RichText → Default → Primary*
+   * Imagem field in *Carrossel → Default → Primary → Imagem*
    *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: Lorem ipsum...
-   * - **API ID Path**: rich_text.default.primary.content
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: full_width_image.default.primary.imagem[].imagem
+   * - **Documentation**: https://prismic.io/docs/field#image
    */
-  content: prismic.RichTextField;
+  imagem: prismic.ImageField<never>;
+
+  /**
+   * Copyright field in *Carrossel → Default → Primary → Imagem*
+   *
+   * - **Field Type**: Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: full_width_image.default.primary.imagem[].copyright
+   * - **Documentation**: https://prismic.io/docs/field#key-text
+   */
+  copyright: prismic.KeyTextField;
 }
 
 /**
- * Default variation for RichText Slice
+ * Primary content in *Carrossel → Default → Primary*
+ */
+export interface FullWidthImageSliceDefaultPrimary {
+  /**
+   * Imagem field in *Carrossel → Default → Primary*
+   *
+   * - **Field Type**: Group
+   * - **Placeholder**: *None*
+   * - **API ID Path**: full_width_image.default.primary.imagem[]
+   * - **Documentation**: https://prismic.io/docs/field#group
+   */
+  imagem: prismic.GroupField<
+    Simplify<FullWidthImageSliceDefaultPrimaryImagemItem>
+  >;
+}
+
+/**
+ * Default variation for Carrossel Slice
  *
  * - **API ID**: `default`
- * - **Description**: RichText
+ * - **Description**: Displays one image spanning the content width.
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type RichTextSliceDefault = prismic.SharedSliceVariation<
+export type FullWidthImageSliceDefault = prismic.SharedSliceVariation<
   "default",
-  Simplify<RichTextSliceDefaultPrimary>,
+  Simplify<FullWidthImageSliceDefaultPrimary>,
   never
 >;
 
 /**
- * Slice variation for *RichText*
+ * Slice variation for *Carrossel*
  */
-type RichTextSliceVariation = RichTextSliceDefault;
+type FullWidthImageSliceVariation = FullWidthImageSliceDefault;
 
 /**
- * RichText Shared Slice
+ * Carrossel Shared Slice
  *
- * - **API ID**: `rich_text`
- * - **Description**: RichText
+ * - **API ID**: `full_width_image`
+ * - **Description**: *None*
  * - **Documentation**: https://prismic.io/docs/slice
  */
-export type RichTextSlice = prismic.SharedSlice<
-  "rich_text",
-  RichTextSliceVariation
+export type FullWidthImageSlice = prismic.SharedSlice<
+  "full_width_image",
+  FullWidthImageSliceVariation
+>;
+
+/**
+ * Primary content in *Quote → Default → Primary*
+ */
+export interface QuoteSliceDefaultPrimary {
+  /**
+   * Quote Text field in *Quote → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: quote.default.primary.quote_text
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  quote_text: prismic.RichTextField;
+}
+
+/**
+ * Default variation for Quote Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Single quote text field, often styled in italic.
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type QuoteSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<QuoteSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *Quote*
+ */
+type QuoteSliceVariation = QuoteSliceDefault;
+
+/**
+ * Quote Shared Slice
+ *
+ * - **API ID**: `quote`
+ * - **Description**: *None*
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type QuoteSlice = prismic.SharedSlice<"quote", QuoteSliceVariation>;
+
+/**
+ * Primary content in *TwoColumnText → Default → Primary*
+ */
+export interface TwoColumnTextSliceDefaultPrimary {
+  /**
+   * Left Column Content field in *TwoColumnText → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: two_column_text.default.primary.left_column_content
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  left_column_content: prismic.RichTextField;
+
+  /**
+   * Right Column Content field in *TwoColumnText → Default → Primary*
+   *
+   * - **Field Type**: Rich Text
+   * - **Placeholder**: *None*
+   * - **API ID Path**: two_column_text.default.primary.right_column_content
+   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
+   */
+  right_column_content: prismic.RichTextField;
+}
+
+/**
+ * Default variation for TwoColumnText Slice
+ *
+ * - **API ID**: `default`
+ * - **Description**: Standard two-column text layout, each with its own rich text content area.
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TwoColumnTextSliceDefault = prismic.SharedSliceVariation<
+  "default",
+  Simplify<TwoColumnTextSliceDefaultPrimary>,
+  never
+>;
+
+/**
+ * Slice variation for *TwoColumnText*
+ */
+type TwoColumnTextSliceVariation = TwoColumnTextSliceDefault;
+
+/**
+ * TwoColumnText Shared Slice
+ *
+ * - **API ID**: `two_column_text`
+ * - **Description**: *None*
+ * - **Documentation**: https://prismic.io/docs/slice
+ */
+export type TwoColumnTextSlice = prismic.SharedSlice<
+  "two_column_text",
+  TwoColumnTextSliceVariation
 >;
 
 declare module "@prismicio/client" {
@@ -548,6 +891,13 @@ declare module "@prismicio/client" {
 
   namespace Content {
     export type {
+      CarrosselDocument,
+      CarrosselDocumentData,
+      FiltroDocument,
+      FiltroDocumentData,
+      FiltroDocumentDataSlicesSlice,
+      LocalDocument,
+      LocalDocumentData,
       PageDocument,
       PageDocumentData,
       PageDocumentDataAgendaItem,
@@ -556,10 +906,19 @@ declare module "@prismicio/client" {
       UidDocument,
       UidDocumentData,
       AllDocumentTypes,
-      RichTextSlice,
-      RichTextSliceDefaultPrimary,
-      RichTextSliceVariation,
-      RichTextSliceDefault,
+      FullWidthImageSlice,
+      FullWidthImageSliceDefaultPrimaryImagemItem,
+      FullWidthImageSliceDefaultPrimary,
+      FullWidthImageSliceVariation,
+      FullWidthImageSliceDefault,
+      QuoteSlice,
+      QuoteSliceDefaultPrimary,
+      QuoteSliceVariation,
+      QuoteSliceDefault,
+      TwoColumnTextSlice,
+      TwoColumnTextSliceDefaultPrimary,
+      TwoColumnTextSliceVariation,
+      TwoColumnTextSliceDefault,
     };
   }
 }

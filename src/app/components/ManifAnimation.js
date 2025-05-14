@@ -1,89 +1,94 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 import Lenis from "@studio-freight/lenis";
 
-export default function FullWidthWord() {
-    const [fontSize, setFontSize] = useState("0px");
-    const [scale, setFontScale] = useState(1);
-    const wordRef = useRef(null);
-    const containerRef = useRef(null);
+const FullWidthWord = forwardRef((props, ref) => {
+  const [fontSize, setFontSize] = useState("0px");
+  const [scale, setFontScale] = useState(1);
+  const wordRef = useRef(null);
+  const lenisRef = useRef(null);
+  const lenisScrollY = useMotionValue(0); // ✅ controlled manually by Lenis
 
-    // Initialize Lenis for smooth scrolling
-    useEffect(() => {
-        const lenis = new Lenis({
-            smooth: true,
-            lerp: 0.03,
-            duration: 4,
-            easing: (t) => t,
-        });
+  // Expose scrollToBottom method
+// useImperativeHandle(ref, () => ({
+//   scrollToBottom: () => {
+//     const isAlreadyAtBottom =
+//       window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
+//       if (!isAlreadyAtBottom && lenisRef.current) {
+//       lenisRef.current.scrollTo(document.body.scrollHeight, {
+//         duration: 10, // ⬅️ longer scroll
+//         easing: (t) =>
+//           t < 0.5
+//             ? 4 * t * t * t
+//             : 1 - Math.pow(-2 * t + 2, 3) / 2, // easeInOutCubic
+//       });
+//     }
+//   },
+// }));
 
-        const onScroll = (time) => lenis.raf(time);
-        const raf = (time) => {
-            onScroll(time);
-            requestAnimationFrame(raf);
-        };
 
-        requestAnimationFrame(raf);
-
-        return () => {
-            lenis.destroy();
-        };
-    }, []);
-
-    // Framer Motion scroll transforms
-    const { scrollYProgress } = useScroll({
-        target: containerRef,
-        offset: ["start start", "end start"],
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.02,
+      duration: 0.8,
+      easing: (t) => t,
     });
 
-    // Scaling based on scroll
-    const fontSizeScale = useTransform(scrollYProgress, [0, 0.5], [1, scale]);
-    const marginLeft = useTransform(scrollYProgress, [0, 0.5], ["18px", "10px"]);
+    lenisRef.current = lenis;
 
-    // Responsive font size
-    useEffect(() => {
-        const updateFontSize = () => {
-            const width = window.innerWidth;
-            const baseWidth = 1280;
-            const baseFontSize = 467;
+    const raf = (time) => {
+      lenis.raf(time);
+      lenisScrollY.set(lenis.scroll); // ✅ update Framer's MotionValue directly
+      requestAnimationFrame(raf);
+    };
 
-            // Proportional scale: scale font size based on viewport width
-            let newFontSize = baseFontSize * (width / baseWidth);
+    requestAnimationFrame(raf);
 
-            // Set font size based on calculated value
-            setFontSize(`${newFontSize}px`);
+    return () => {
+      lenis.destroy();
+    };
+  }, [lenisScrollY]);
 
-            // Calculate scale for scroll effect (to match your original scroll behavior)
-            const scrollScale = 20 * 100 / newFontSize;
-            const calculatedScale = scrollScale / 100;
+  const fontSizeScale = useTransform(lenisScrollY, [0, 300], [1, scale]);
+  const marginLeft = useTransform(lenisScrollY, [0, 300], ["18px", "10px"]);
 
-            // Store the scale for the scroll transformation (maintaining behavior across screens)
-            setFontScale(calculatedScale);
-        };
+  useEffect(() => {
+    const updateFontSize = () => {
+      const width = window.innerWidth;
+      const baseWidth = 1280;
+      const baseFontSize = 467;
+      const newFontSize = baseFontSize * (width / baseWidth);
+      setFontSize(`${newFontSize}px`);
 
-        updateFontSize();
-        window.addEventListener("resize", updateFontSize);
-        return () => window.removeEventListener("resize", updateFontSize);
-    }, []);
+      const scrollScale = (20 * 100) / newFontSize;
+      setFontScale(scrollScale / 100);
+    };
 
-    return (
-        <div ref={containerRef} className="w-screen h-[100vh]">
-            <div className="w-screen h-screen flex items-start justify-start text-start sticky top-0">
-                <motion.h1
-                    ref={wordRef}
-                    className="font-cc font-bold leading-[0.95] whitespace-nowrap top-[10px] fixed"
-                    style={{
-                        fontSize,
-                        scale: fontSizeScale,
-                        marginLeft,
-                        transformOrigin: "left top",
-                        maxWidth: "100vw",
-                    }}
-                >
-                    MANIF
-                </motion.h1>
-            </div>
-        </div>
-    );
-}
+    updateFontSize();
+    window.addEventListener("resize", updateFontSize);
+    return () => window.removeEventListener("resize", updateFontSize);
+  }, []);
+
+  return (
+    <div className="w-screen h-[100vh]">
+      <div className="w-screen h-screen flex items-start justify-start text-start sticky top-0">
+        <motion.h1
+          ref={wordRef}
+          className="font-cc font-bold leading-[0.95] whitespace-nowrap top-[10px] fixed"
+          style={{
+            fontSize,
+            scale: fontSizeScale,
+            marginLeft,
+            transformOrigin: "left top",
+            maxWidth: "100vw",
+          }}
+        >
+          MANIF
+        </motion.h1>
+      </div>
+    </div>
+  );
+});
+
+export default FullWidthWord;

@@ -1,0 +1,34 @@
+{
+  "type": "SharedSlice",
+  "id": "two_column_text",
+  "name": "TwoColumnText",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Standard two-column text layout, each with its own rich text content area.",
+      "version": "initial",
+      "imageUrl": "",
+      "docURL": "...",
+      "primary": {
+        "left_column_content": {
+          "type": "StructuredText",
+          "config": {
+            "label": "Left Column Content",
+            "placeholder": "",
+            "allowTargetBlank": true,
+            "multi": "paragraph,strong,em,hyperlink"
+          }
+        },
+        "right_column_content": {
+          "type": "StructuredText",
+          "config": {
+            "multi": "paragraph,strong,em,hyperlink",
+            "label": "Right Column Content"
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}

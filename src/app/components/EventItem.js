@@ -33,11 +33,11 @@ export default function EventItem({ event }) {
                 }}
               />
             )}
-            {event.agente && (
+            {/* {event.agente && (
               <p className="text-[1.2rem] mt-auto">
                 Residência de {event.agente}
               </p>
-            )}
+            )} */}
           </div>
   
           {/* Location Column */}

@@ -1,0 +1,42 @@
+{
+  "type": "SharedSlice",
+  "id": "full_width_image",
+  "name": "Carrossel",
+  "variations": [
+    {
+      "id": "default",
+      "name": "Default",
+      "description": "Displays one image spanning the content width.",
+      "version": "initial",
+      "imageUrl": "",
+      "docURL": "...",
+      "primary": {
+        "imagem": {
+          "type": "Group",
+          "config": {
+            "label": "Imagem",
+            "repeat": true,
+            "fields": {
+              "imagem": {
+                "type": "Image",
+                "config": {
+                  "label": "Imagem",
+                  "constraint": {},
+                  "thumbnails": []
+                }
+              },
+              "copyright": {
+                "type": "Text",
+                "config": {
+                  "label": "Copyright",
+                  "placeholder": ""
+                }
+              }
+            }
+          }
+        }
+      },
+      "items": {}
+    }
+  ]
+}
