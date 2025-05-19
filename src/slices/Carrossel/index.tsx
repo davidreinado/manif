@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
-import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
-import 'swiper/css'; // Swiper styles
+import 'swiper/css';
+import { ImagePixelated } from "react-pixelate"; // Correct named import
 
 /**
  * Props for `FullWidthImage`.
@@ -13,11 +13,23 @@ import 'swiper/css'; // Swiper styles
 export type FullWidthImageProps =
   SliceComponentProps<Content.FullWidthImageSlice>;
 
-/**
- * Component for "FullWidthImage" Slices.
- */
 const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
   const images = slice.primary.imagem || [];
+  const [pixelSize, setPixelSize] = useState(24); // Start pixelated
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPixelSize((prev) => {
+        if (prev <= 0) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 4; // Decrease in steps
+      });
+    }, 120); // Controls smoothness
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section
@@ -25,22 +37,17 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
       data-slice-variation={slice.variation}
       className="w-full"
     >
-      <Swiper
-        spaceBetween={20}
-        autoHeight
-        loop
-        className="w-full"
-      >
+      <Swiper spaceBetween={20} loop className="w-full">
         {images.map((imgItem, index) => (
           <SwiperSlide key={index} className="w-full">
             {imgItem.imagem?.url && (
               <div className="relative w-full">
-                <Image
+                <ImagePixelated
                   src={imgItem.imagem.url}
-                  alt={imgItem.imagem.alt || ''}
                   width={imgItem.imagem.dimensions?.width || 1200}
                   height={imgItem.imagem.dimensions?.height || 800}
-                  className="w-full h-auto object-contain cursor-crosshair"
+                  pixelSize={pixelSize}
+                  centered
                 />
                 {imgItem.copyright && (
                   <p className="text-xs text-gray-500 mt-2 text-right">
