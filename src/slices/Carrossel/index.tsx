@@ -4,8 +4,9 @@ import { FC, useEffect, useState } from "react";
 import { Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import Image from "next/image";
 import 'swiper/css';
-import { ImagePixelated } from "react-pixelate"; // Correct named import
+// import { ImagePixelated } from "react-pixelate"; // Correct named import
 
 /**
  * Props for `FullWidthImage`.
@@ -42,12 +43,20 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
           <SwiperSlide key={index} className="w-full">
             {imgItem.imagem?.url && (
               <div className="relative w-full">
-                <ImagePixelated
+                {/* <ImagePixelated
                   src={imgItem.imagem.url}
                   width={imgItem.imagem.dimensions?.width || 1200}
                   height={imgItem.imagem.dimensions?.height || 800}
                   pixelSize={pixelSize}
                   centered
+                /> */}
+                <Image
+                  src={imgItem.imagem.url}
+                  width={imgItem.imagem.dimensions?.width || 1200}
+                  height={imgItem.imagem.dimensions?.height || 800}
+                  alt={imgItem.imagem.alt}
+                  // pixelSize={pixelSize}
+                  // centered
                 />
                 {imgItem.copyright && (
                   <p className="text-xs text-gray-500 mt-2 text-right">
