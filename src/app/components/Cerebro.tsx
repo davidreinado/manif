@@ -1,31 +1,40 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+
+import { useEffect, useRef, useState, ReactNode } from "react";
 import ArtistsResidencyAndCalendar from "@/app/components/ArtistsResidencyAndCalendar";
 import { motion } from "framer-motion";
 import FullWidthWord from "@/app/components/ManifAnimation";
-import { useSearchParams  } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from 'react';
 
+// ✅ Define the props type
+interface CerebroProps {
+  home: any;
+  filteredLocalidades: any[];
+  filteredAgentes: any[];
+  existingLocalidadeDocs: any[];
+  children: ReactNode;
+}
+
+// ✅ Add the props type to the component
 export default function Cerebro({
   home,
   filteredLocalidades,
   filteredAgentes,
   existingLocalidadeDocs,
-  children
-}) {
+  children,
+}: CerebroProps) {
   const navRef = useRef(null);
   const typeRef = useRef(null);
-  const lenisControlRef = useRef(null); // Ref to FullWidthWord
+  const lenisControlRef = useRef(null);
   const searchParams = useSearchParams();
 
   const [activeButton, setActiveButton] = useState("Sobre");
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
-
   const [selectedLocalidade, setSelectedLocalidade] = useState(null);
 
-  // console.log(selectedLocalidadeFromContext)
-
-  const handleButtonClick = (buttonName) => {
+  const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);
   };
 
@@ -113,17 +122,20 @@ export default function Cerebro({
       {/* Animation & Calendar */}
       <FullWidthWord ref={lenisControlRef} />
 
-      <ArtistsResidencyAndCalendar
-        home={home}
-        selectedType={selectedType}
-        setSelectedType={setSelectedType}
-        activeButton={activeButton}
-        filteredAgentes={filteredAgentes}
-        filteredLocalidades={filteredLocalidades}
-        existingLocalidadeDocs={existingLocalidadeDocs}
-        children={children}
-        setActiveButton={setActiveButton}
-      />
+      <Suspense fallback={null}>
+        <ArtistsResidencyAndCalendar
+          home={home}
+          selectedType={selectedType}
+          setSelectedType={setSelectedType}
+          activeButton={activeButton}
+          filteredAgentes={filteredAgentes}
+          filteredLocalidades={filteredLocalidades}
+          existingLocalidadeDocs={existingLocalidadeDocs}
+          setActiveButton={setActiveButton}
+        >
+          {children}
+        </ArtistsResidencyAndCalendar>
+      </Suspense>
 
 
       {/* Bottom Buttons */}

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef, forwardRef, useImperativeHandle } from "react";
+import { useState, useEffect, useRef, forwardRef } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import Lenis from "@studio-freight/lenis";
 
@@ -8,25 +8,7 @@ const FullWidthWord = forwardRef((props, ref) => {
   const [scale, setFontScale] = useState(1);
   const wordRef = useRef(null);
   const lenisRef = useRef(null);
-  const lenisScrollY = useMotionValue(0); // ✅ controlled manually by Lenis
-
-  // Expose scrollToBottom method
-// useImperativeHandle(ref, () => ({
-//   scrollToBottom: () => {
-//     const isAlreadyAtBottom =
-//       window.innerHeight + window.scrollY >= document.body.offsetHeight - 10;
-//       if (!isAlreadyAtBottom && lenisRef.current) {
-//       lenisRef.current.scrollTo(document.body.scrollHeight, {
-//         duration: 10, // ⬅️ longer scroll
-//         easing: (t) =>
-//           t < 0.5
-//             ? 4 * t * t * t
-//             : 1 - Math.pow(-2 * t + 2, 3) / 2, // easeInOutCubic
-//       });
-//     }
-//   },
-// }));
-
+  const lenisScrollY = useMotionValue(0);
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -39,7 +21,7 @@ const FullWidthWord = forwardRef((props, ref) => {
 
     const raf = (time) => {
       lenis.raf(time);
-      lenisScrollY.set(lenis.scroll); // ✅ update Framer's MotionValue directly
+      lenisScrollY.set(lenis.scroll);
       requestAnimationFrame(raf);
     };
 
@@ -90,5 +72,7 @@ const FullWidthWord = forwardRef((props, ref) => {
     </div>
   );
 });
+
+FullWidthWord.displayName = "FullWidthWord";
 
 export default FullWidthWord;

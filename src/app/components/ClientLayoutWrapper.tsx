@@ -2,6 +2,8 @@
 "use client";
 
 import Cerebro from "@/app/components/Cerebro";
+import React from "react"; // optional but useful for typing
+import { Suspense } from 'react';
 
 export default function ClientLayoutWrapper({
   home,
@@ -17,13 +19,15 @@ export default function ClientLayoutWrapper({
   children: React.ReactNode;
 }) {
   return (
+    <Suspense fallback={null}>
       <Cerebro
         home={home}
         filteredLocalidades={filteredLocalidades}
         filteredAgentes={filteredAgentes}
         existingLocalidadeDocs={existingLocalidadeDocs}
-        children={children}
       >
+        {children}
       </Cerebro>
+    </Suspense>
   );
 }

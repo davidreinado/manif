@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import {
   motion,
@@ -13,10 +12,26 @@ import EventItem from "./EventItem";
 import { PrismicRichText } from "./PrismicRichText";
 import slugify from "@sindresorhus/slugify";
 import { useMemo } from "react";
-import { createClient } from "@/prismicio";
 import { usePathname } from 'next/navigation';
 import { useSearchParams } from "next/navigation";
+import Image from 'next/image';
 
+// At the top
+import { ReactNode } from "react";
+
+type ArtistsResidencyAndCalendarProps = {
+  home: any;
+  selectedType: any;
+  setSelectedType: any;
+  activeButton: any;
+  filteredLocalidades: any;
+  filteredAgentes: any;
+  existingLocalidadeDocs: any;
+  children?: ReactNode;
+  setActiveButton: any;
+};
+
+// Then type your component
 export default function ArtistsResidencyAndCalendar({
   home,
   selectedType,
@@ -24,11 +39,11 @@ export default function ArtistsResidencyAndCalendar({
   activeButton,
   filteredLocalidades,
   filteredAgentes,
-  selectedLocalidade,
   existingLocalidadeDocs,
   children,
-  setActiveButton
-}) {
+  setActiveButton,
+}: ArtistsResidencyAndCalendarProps) {
+
   const pathname = usePathname();
   const [initialFontSize, setInitialFontSize] = useState("10vh");
   const [isH2Visible, setIsH2Visible] = useState(false);
@@ -36,10 +51,6 @@ export default function ArtistsResidencyAndCalendar({
   const [filtro, setFiltro] = useState("");
   const searchParams = useSearchParams();
   const [localidadeDoc, setLocalidadeDoc] = useState(null);
-
-
-
-
   const containerRef = useRef(null);
   const textRef = useRef(null);
 
@@ -57,12 +68,6 @@ export default function ArtistsResidencyAndCalendar({
     setIsH2Visible(latest > "-100%");
   });
 
-  // useEffect(() => {
-  //   console.log('Filtro changed:', filtro);
-  //   console.log('localidadeDoc:', localidadeDoc);
-  //   console.log('selectedLocalidade:', localidadeDoc);
-  // }, [filtro]);
-
   useEffect(() => {
     console.log('Path changed:', pathname);
     if (!pathname.includes('/filtro')) {
@@ -76,12 +81,13 @@ export default function ArtistsResidencyAndCalendar({
     if (chosenFilter) {
       const selectedDoc = existingLocalidadeDocs.find(
         (doc) => doc.uid === chosenFilter)
+      console.log(selectedDoc)
       setLocalidadeDoc(selectedDoc);
     }
     else {
       setLocalidadeDoc(null)
     }
-  }, [searchParams]); // ✅ react to actual pathname changes
+  }, [searchParams, existingLocalidadeDocs]); // ✅ react to actual pathname changes
 
   useEffect(() => {
     const updateLayout = () => {
@@ -112,61 +118,6 @@ export default function ArtistsResidencyAndCalendar({
   const usedAgenteUIDs = new Set(
     filteredAgenda.map((item) => slugify(item.agente)).filter(Boolean)
   );
-
-  // // 🔄 Check existing UIDs and filter data
-  // useEffect(() => {
-  //   const checkUIDs = async () => {
-  //     const client = createClient(); // configure appropriately for client-side
-
-  //     const existingLocalidadeUIDs = [];
-  //     const existingAgenteUIDs = [];
-
-
-  //     await Promise.all(
-  //       Array.from(usedLocalidadeUIDs).map(async uid => {
-  //         try {
-  //           const doc = await client.getByUID("local", uid);
-  //           if (doc) {
-  //             existingLocalidadeUIDs.push(doc);
-  //           }
-  //         } catch (error) {
-  //           // Do nothing if doc not found or error occurs
-  //         }
-  //       })
-  //     );
-
-  //     await Promise.all(
-  //       Array.from(usedAgenteUIDs).map(async uid => {
-  //         try {
-  //           const doc = await client.getByUID("filtro", uid);
-  //           if (doc) {
-  //             existingAgenteUIDs.push(doc);
-  //           }
-  //         } catch (error) {
-  //           // Do nothing if doc not found or error occurs
-  //         }
-  //       })
-  //     );
-
-  //     const localidadeUIDs = existingLocalidadeUIDs.map(doc => doc.uid);
-  //     const agendaUIDs = existingAgenteUIDs.map(doc => doc.uid);
-
-  //     const localidades = filteredAgenda.filter((item) =>
-  //       localidadeUIDs.includes(slugify(item.localidade))
-  //     ) ?? [];
-
-  //     const agentes = filteredAgenda.filter((item) =>
-  //       agendaUIDs.includes(slugify(item.agente))
-  //     ) ?? [];
-
-  //     setFilteredLocalidades(localidades);
-  //     setFilteredAgentes(agentes);
-  //   };
-
-  //   if (filteredAgenda.length > 0 && filteredLocalidades.length == 0) {
-  //     checkUIDs();
-  //   }
-  // }, [filteredAgenda]);
 
   return (
     <div
@@ -232,12 +183,15 @@ export default function ArtistsResidencyAndCalendar({
 
                         return (
                           image?.url && (
-                            <img
-                              key={key}
-                              src={image.url}
-                              alt={image.alt || `Imagem ${index + 1}`}
-                              className="my-4 h-[80px] grayscale"
-                            />
+                          <Image
+                          key={key}
+                          src={image.url}
+                          alt={image.alt || `Imagem ${index + 1}`}
+                          width={100}
+                          height={80}
+                          className="my-4 grayscale"
+                          style={{ height: '80px', width: 'auto' }}
+                          />
                           )
                         );
                       })}

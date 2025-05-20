@@ -8,7 +8,7 @@ import Lenis from '@studio-freight/lenis';
 export default function FiltroLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [isMounted, setIsMounted] = useState(false);
-  const lenisRef = useRef(null);
+  const lenisRef = useRef<Lenis | null>(null);
   const scrollContainerRef = useRef(null);
 
   useEffect(() => {
@@ -24,12 +24,11 @@ export default function FiltroLayout({ children }: { children: React.ReactNode }
       smoothWheel: true,
       easing: (t) => t, // Linear easing
       duration: 1.0, // Added duration back for better control
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smoothTouch: true,
+      // gestureDirection: 'vertical',
+      // smoothTouch: true,
       wheelMultiplier: 1.2, // Slightly faster wheel
       touchMultiplier: 1.5, // Slightly faster touch
-      normalizeWheel: true, // Better cross-browser consistency
+      // normalizeWheel: true, // Better cross-browser consistency
       infinite: false,
     });
 
