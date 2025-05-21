@@ -55,7 +55,8 @@ const FullWidthWord = forwardRef((props, ref) => {
   return (
     <div className="w-screen h-[100vh]">
       <div className="w-screen h-screen flex items-start justify-start text-start sticky top-0">
-        <motion.h1
+        <motion.a
+          href="/"
           ref={wordRef}
           className="font-cc font-bold leading-[0.95] whitespace-nowrap top-[10px] fixed"
           style={{
@@ -66,8 +67,10 @@ const FullWidthWord = forwardRef((props, ref) => {
             maxWidth: "100vw",
           }}
         >
+          <h1>
           MANIF
-        </motion.h1>
+          </h1>
+        </motion.a>
       </div>
     </div>
   );

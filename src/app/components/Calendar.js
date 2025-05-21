@@ -22,10 +22,11 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
 
   const router = useRouter();
   const typeOptions = {
-    "Residências": "Residências",
-    "Obras": "Introdução das obras de arte",
-    "Mediação": "Acções de mediação"
+    "Residências": "Artistas",
+    "Obras": "Exposições",
+    "Mediação": "Mediação"
   };
+
 
   const filteredLocalidades = [...new Set(
     home.data.agenda
@@ -47,10 +48,12 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const localidadesUIDs = localidadesPages.map(l => slugify(l.localidade));
   const agentesUIDs = agentesPages.map(a => slugify(a.agente));
 
-  const combinedFilters = [
-    ...allLocalidades.map(loc => ({ type: 'localidade', label: loc })),
-    ...allAgentes.map(agente => ({ type: 'agente', label: agente })),
-  ];
+const combinedFilters = selectedType !== null
+  ? allAgentes.map(agente => ({ type: 'agente', label: agente }))
+  : [
+      ...allLocalidades.map(loc => ({ type: 'localidade', label: loc })),
+    ];
+
   const [hoveredCombinedFilter, setHoveredCombinedFilter] = useState(null); // ✅ ADD THIS HERE
 
   const filteredAgenda = useMemo(() => {
@@ -84,6 +87,10 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+    useEffect(() => {
+    console.log("tipo é " + selectedType)
+  }, [selectedType]);
 
   useEffect(() => {
     if (!isClient || !scrollContainerRef.current) return;
@@ -161,10 +168,9 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
     ${isSelected && !hoveredDistrict ? 'text-black font-bold active' : ''}
     ${isHovered ? 'text-black font-bold' : ''}
-    ${isOtherHovered ? 'text-[#756D47]' : ''}
-    ${!isSelected && !hoveredDistrict ? 'text-[#756D47] hover:text-black' : ''}
+    ${isOtherHovered ? 'text-[#808080]' : ''}
+    ${!isSelected && !hoveredDistrict ? 'text-[#808080] hover:text-black' : ''}
   `;
-
                 return (
                   <li key={district}>
                     <button
@@ -188,11 +194,11 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 const isOtherHovered = hoveredType && hoveredType !== value;
 
                 const className = `
-    text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
+    text-link text-[1.6rem] w-full text-left px-2 text-cc mb-[20px]
     ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
     ${isHovered ? 'text-black font-bold' : ''}
-    ${isOtherHovered ? 'text-[#756D47]' : ''}
-    ${!isSelected && !hoveredType ? 'text-[#756D47] hover:text-black' : ''}
+    ${isOtherHovered ? 'text-[#808080]' : ''}
+    ${!isSelected && !hoveredType ? 'text-[#808080] hover:text-black' : ''}
   `;
 
                 return (
@@ -224,7 +230,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   setSelectedYear(year);
                   setSelectedMonth(null);
                 }}
-                className={`font-cc text-[1.8rem] uppercase text-[#756D47] ${selectedYear === year ? 'text-black' : 'hover:text-black'}`}
+                className={`font-cc text-[1.8rem] uppercase ${selectedYear === year ? 'text-black' : 'text-[#808080] hover:text-black'}`}
               >
                 {year}
               </button>
@@ -236,7 +242,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 <button
                   key={month}
                   onClick={() => toggleMonth(month)}
-                  className={`text-[1.8rem] font-cc uppercase text-[#756D47] ${selectedMonth === month ? 'text-black font-bold active' : 'hover:text-black'}`}
+                  className={`text-[1.8rem] font-cc uppercase ${selectedMonth === month ? 'text-[#808080] font-bold active' : 'text-black hover:text-[#808080]'}`}
                 >
                   {month}
                 </button>
@@ -271,8 +277,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     text-link text-[1.6rem] font-cc px-2 py-1 whitespace-nowrap leading-[1.4]
     ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
     ${isHovered ? 'active' : ''}
-    ${isOtherHovered ? 'text-[#756D47]' : ''}
-    ${!isSelected && !hoveredCombinedFilter ? 'text-link text-[#756D47] hover:text-black' : ''}
+    ${isOtherHovered ? 'text-[#808080]' : ''}
+    ${!isSelected && !hoveredCombinedFilter ? 'text-link text-[#808080] hover:text-black' : ''}
   `;
 
               const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });

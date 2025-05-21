@@ -42,7 +42,7 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
         {images.map((imgItem, index) => (
           <SwiperSlide key={index} className="w-full">
             {imgItem.imagem?.url && (
-              <div className="relative w-full">
+              <div className="relative w-full cursor-move">
                 {/* <ImagePixelated
                   src={imgItem.imagem.url}
                   width={imgItem.imagem.dimensions?.width || 1200}
@@ -59,7 +59,7 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
                   // centered
                 />
                 {imgItem.copyright && (
-                  <p className="text-xs text-gray-500 mt-2 text-right">
+                  <p className="text-xs mt-2 text-right">
                     © {imgItem.copyright}
                   </p>
                 )}
