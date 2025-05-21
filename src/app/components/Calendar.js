@@ -51,6 +51,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     ...allLocalidades.map(loc => ({ type: 'localidade', label: loc })),
     ...allAgentes.map(agente => ({ type: 'agente', label: agente })),
   ];
+  const [hoveredCombinedFilter, setHoveredCombinedFilter] = useState(null); // ✅ ADD THIS HERE
 
   const filteredAgenda = useMemo(() => {
     return home.data.agenda.filter((item) => {
@@ -77,6 +78,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
 
   const scrollContainerRef = useRef(null);
   const lenisRef = useRef(null);
+  const [hoveredDistrict, setHoveredDistrict] = useState(null);
+  const [hoveredType, setHoveredType] = useState(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -134,6 +137,13 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     setSelectedMonth(prev => prev === month ? null : month);
   };
 
+  const handleClick = (e) => {
+    e.preventDefault();
+    setActiveButton("Sobre");
+    setFiltro(slug);
+    router.push(`/filtro/${slug}`, undefined, { shallow: true });
+  };
+
   if (!isClient) return null;
 
   return (
@@ -142,37 +152,70 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
         <div className="hidden sticky top-0 pt-[14px] h-[calc(100vh-8px)] md:flex flex-col">
           <div className='h-[50%] mt-0'>
             <ul>
-              {districts.map((district) => (
-                <li key={district}>
-                  <button
-                    onClick={() => toggleDistrict(district)}
-                    className={`text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc ${selectedDistrict === null || selectedDistrict === district ? 'font-bold active' : 'text-[#756D47] hover:text-black'}`}
-                  >
-                    {district}
-                  </button>
-                </li>
-              ))}
+              {districts.map((district) => {
+                const isSelected = selectedDistrict === null || selectedDistrict === district;
+                const isHovered = hoveredDistrict === district;
+                const isOtherHovered = hoveredDistrict && hoveredDistrict !== district;
+
+                const className = `
+    text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
+    ${isSelected && !hoveredDistrict ? 'text-black font-bold active' : ''}
+    ${isHovered ? 'text-black font-bold' : ''}
+    ${isOtherHovered ? 'text-[#756D47]' : ''}
+    ${!isSelected && !hoveredDistrict ? 'text-[#756D47] hover:text-black' : ''}
+  `;
+
+                return (
+                  <li key={district}>
+                    <button
+                      onClick={() => toggleDistrict(district)}
+                      onMouseEnter={() => setHoveredDistrict(district)}
+                      onMouseLeave={() => setHoveredDistrict(null)}
+                      className={className}
+                    >
+                      {district}
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </div>
           <div className='h-[50%] mt-[8px] hidden md:block'>
             <ul>
-              {Object.entries(typeOptions).map(([value, label]) => (
-                <li key={value}>
-                  <button
-                    onClick={() => toggleType(value)}
-                    className={`text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc ${selectedType === null || selectedType === value ? 'font-bold text-black active' : 'text-[#756D47] hover:text-black'}`}
-                  >
-                    {label}
-                  </button>
-                </li>
-              ))}
+              {Object.entries(typeOptions).map(([value, label]) => {
+                const isSelected = selectedType === null || selectedType === value;
+                const isHovered = hoveredType === value;
+                const isOtherHovered = hoveredType && hoveredType !== value;
+
+                const className = `
+    text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
+    ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
+    ${isHovered ? 'text-black font-bold' : ''}
+    ${isOtherHovered ? 'text-[#756D47]' : ''}
+    ${!isSelected && !hoveredType ? 'text-[#756D47] hover:text-black' : ''}
+  `;
+
+                return (
+                  <li key={value}>
+                    <button
+                      onClick={() => toggleType(value)}
+                      onMouseEnter={() => setHoveredType(value)}
+                      onMouseLeave={() => setHoveredType(null)}
+                      className={className}
+                    >
+                      {label}
+                    </button>
+                  </li>
+                );
+              })}
+
             </ul>
           </div>
         </div>
       </div>
 
-      <div className="w-full lg:w-[80%] flex flex-col">
-        <div className="flex mb-[15px] gap-[20px] pt-[14px]">
+      <div className="w-full lg:w-[80%] flex flex-col pt-[14px]">
+        <div className="flex mb-[15px] gap-[20px] ">
           <div className="flex flex-wrap gap-[20px]">
             {years.map((year) => (
               <button
@@ -194,7 +237,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   key={month}
                   onClick={() => toggleMonth(month)}
                   className={`text-[1.8rem] font-cc uppercase text-[#756D47] ${selectedMonth === month ? 'text-black font-bold active' : 'hover:text-black'}`}
-                  >
+                >
                   {month}
                 </button>
               ))}
@@ -203,7 +246,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
         </div>
 
         {selectedYear && localidadesUIDs.length > 0 && (
-          <div className="flex gap-[20px] max-w-full overflow-x-scroll whitespace-nowrap mb-[14px]">
+          <div className="flex gap-[20px] max-w-full overflow-x-scroll whitespace-nowrap mb-[14px] items-center">
             {combinedFilters.map(({ type, label }) => {
               const slug = slugify(label);
               const isAgente = type === 'agente';
@@ -211,50 +254,81 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 ? agentesUIDs.includes(slug)
                 : localidadesUIDs.includes(slug);
 
-              const className = `text-link text-[1.6rem] font-cc px-2 py-1 ${(!selectedCombinedFilter || (selectedCombinedFilter.label === label && selectedCombinedFilter.type === type)) ? 'text-black font-bold active' : 'text-[#756D47] hover:text-black'}`;
+              const isSelected =
+                !selectedCombinedFilter ||
+                (selectedCombinedFilter.label === label && selectedCombinedFilter.type === type);
 
-              const button = (
-                <button
-                  onClick={() => {
-                    const next = selectedCombinedFilter?.label === label && selectedCombinedFilter?.type === type
-                      ? null
-                      : { type, label };
-                    setSelectedCombinedFilter(next);
-                    if (!isAgente && hasPage) {
-                      setActiveButton("Apoios")
-                      window.history.replaceState({}, '', `?localidade=${slug}`);
-                      setFiltro("")
-                    }
-                  }}
-                  className={className}
-                >
-                  {label}
-                </button>
-              );
+              const isHovered =
+                hoveredCombinedFilter &&
+                hoveredCombinedFilter.label === label &&
+                hoveredCombinedFilter.type === type;
 
-              if (hasPage && isAgente) {
-                return (
-                  <button
-                    key={`${type}-${label}`}
-                    onClick={() => {
-                      setSelectedCombinedFilter({ type, label });
-                      setActiveButton("Sobre")
-                      router.push(`/filtro/${slug}`);
-                      setFiltro(slug)
-                    }}
-                    className={className}
-                  >
-                    {label}
-                  </button>
-                );
-              }
+              const isOtherHovered =
+                hoveredCombinedFilter &&
+                (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
+
+              const className = `
+    text-link text-[1.6rem] font-cc px-2 py-1 whitespace-nowrap leading-[1.4]
+    ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
+    ${isHovered ? 'active' : ''}
+    ${isOtherHovered ? 'text-[#756D47]' : ''}
+    ${!isSelected && !hoveredCombinedFilter ? 'text-link text-[#756D47] hover:text-black' : ''}
+  `;
+
+              const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });
+              const handleMouseLeave = () => setHoveredCombinedFilter(null);
+
+              const handleClick = () => {
+                const next =
+                  selectedCombinedFilter?.label === label &&
+                    selectedCombinedFilter?.type === type
+                    ? null
+                    : { type, label };
+
+                setSelectedCombinedFilter(next);
+
+                if (!isAgente && hasPage) {
+                  setActiveButton("Apoios");
+                  window.history.replaceState({}, '', `?localidade=${slug}`);
+                  setFiltro("");
+                } else {
+                  setFiltro(slug);
+                }
+              };
 
               return (
                 <div key={`${type}-${label}`}>
-                  {button}
+                  {isAgente && hasPage ? (
+                    <Link
+                      href={`/filtro/${slug}`}
+                      scroll={false} // Prevent default scroll behavior
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                      className={className}
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent default navigation
+                        setActiveButton("Sobre");
+                        setFiltro(slug);
+                        // Use Next.js router to navigate
+                        router.push(`/filtro/${slug}`, undefined, { shallow: true });
+                      }}
+                    >
+                      {label}
+                    </Link>
+                  ) : (
+                    <button
+                      onClick={handleClick}
+                      onMouseEnter={handleMouseEnter}
+                      onMouseLeave={handleMouseLeave}
+                      className={className}
+                    >
+                      {label}
+                    </button>
+                  )}
                 </div>
               );
             })}
+
           </div>
         )}
 
@@ -274,7 +348,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
                   className="space-y-4"
                 >
-                  {filteredAgenda.map((event, index) => (
+                  {[...filteredAgenda].reverse().map((event, index) => (
                     <motion.div
                       key={event.id ?? `event-${index}`}
                       variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}

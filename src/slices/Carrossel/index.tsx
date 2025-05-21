@@ -54,7 +54,7 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
                   src={imgItem.imagem.url}
                   width={imgItem.imagem.dimensions?.width || 1200}
                   height={imgItem.imagem.dimensions?.height || 800}
-                  alt={imgItem.imagem.alt}
+                  alt={imgItem.imagem.alt || `Carrossel ${index + 1}`}
                   // pixelSize={pixelSize}
                   // centered
                 />

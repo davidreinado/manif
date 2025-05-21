@@ -57,6 +57,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </ClientLayoutWrapper>
         
         <PrismicPreview repositoryName={repositoryName} />
+        {/* fake scroll buffer */}
+        <div className="h-[20px] pointer-events-none" />
       </body>
     </html>
 

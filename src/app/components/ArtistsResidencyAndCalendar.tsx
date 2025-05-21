@@ -69,7 +69,6 @@ export default function ArtistsResidencyAndCalendar({
   });
 
   useEffect(() => {
-    console.log('Path changed:', pathname);
     if (!pathname.includes('/filtro')) {
       setFiltro("");
     }
@@ -81,7 +80,6 @@ export default function ArtistsResidencyAndCalendar({
     if (chosenFilter) {
       const selectedDoc = existingLocalidadeDocs.find(
         (doc) => doc.uid === chosenFilter)
-      console.log(selectedDoc)
       setLocalidadeDoc(selectedDoc);
     }
     else {

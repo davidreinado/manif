@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { createClient } from "@/prismicio";
 import { SliceZone } from "@prismicio/react";
@@ -8,8 +9,10 @@ import { components } from "@/slices"; // <- Import your slice components
 
 export default function FilterPage() {
   const router = useRouter();
-  const pathname = usePathname();
-  const uid = pathname.split('/')[2];
+  // const pathname = usePathname();
+  // const uid = pathname.split('/')[2];
+  const params = useParams();
+const uid = params?.uid as string;
   const client = createClient();
 
   const [filtroDoc, setFiltroDoc] = useState(null);
@@ -29,6 +32,7 @@ export default function FilterPage() {
       fetchDoc();
     }
   }, [uid]);
+
 
   const handleClose = () => {
     router.push('/');

@@ -158,7 +158,6 @@ html {
 
 .text-link {
     font-family: 'Ramboia VF';
-    font-weight: 400;
     font-variation-settings: "wght" 400;
     transition: font-variation-settings 1.6s cubic-bezier(.19,1,.22,1);
   }
