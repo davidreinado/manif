@@ -141,7 +141,7 @@ export default function ArtistsResidencyAndCalendar({
         className="sticky top-0 h-screen flex items-start justify-start"
       >
         <motion.h2
-          className="font-bold italic leading-[1.120] sm:leading-[1.1] md:leading-none mr-[45px]"
+          className="font-bold italic leading-[1.120] sm:leading-[1.1] md:leading-none mr-[45px] select-none"
           style={{
             fontSize,
             transformOrigin: "top left",

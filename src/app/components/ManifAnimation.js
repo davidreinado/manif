@@ -35,7 +35,7 @@ export default function FullWidthWord({ lenisScrollY }) {
     <div className="w-screen h-[100vh]">
       <div className="w-screen h-screen flex items-start justify-start text-start sticky top-0">
         <motion.h1
-          className="font-cc font-bold leading-[0.95] whitespace-nowrap top-[10px] fixed"
+          className="font-cc font-bold leading-[0.95] whitespace-nowrap top-[10px] fixed select-none"
           style={{
             fontSize,
             scale: fontSizeScale,
