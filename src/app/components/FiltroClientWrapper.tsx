@@ -1,8 +1,6 @@
-// app/filtro/[uid]/FiltroClientWrapper.tsx
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-// import { usePathname } from "next/navigation";
 import { useParams } from 'next/navigation';
 import { useEffect, useState, useRef } from "react";
 import Lenis from '@studio-freight/lenis';
@@ -60,16 +58,15 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
 
   return (
     <div>
-      {isMounted && (
+      {isMounted && children && (
         <AnimatePresence mode="wait">
           <motion.div
-            key={"filtro " + uid}
-            initial={{ opacity: 0, y: 80 }}
-            animate={{ opacity: 1, y: 70 }}
-            exit={{ opacity: 0, y: -10 }}
+            initial={{  y: 80 }}
+            animate={{  y: 80 }}
+            exit={{  y: 80 }}
             transition={{ duration: 0.225 }}
             ref={scrollContainerRef}
-            className="max-h-[calc(100vh-75px)] overflow-y-auto z-50 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] overscroll-contain pb-[15px] touch-pan-y"
+            className="max-h-[calc(100vh-76px)] overflow-y-auto z-50 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] overscroll-contain pb-[15px] touch-pan-y"
           >
             {children}
           </motion.div>

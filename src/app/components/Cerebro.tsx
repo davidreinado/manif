@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useRef, useState, ReactNode } from "react";
-import ArtistsResidencyAndCalendar from "@/app/components/ArtistsResidencyAndCalendar";
-import { motion } from "framer-motion";
+import Lenis from "@studio-freight/lenis";
 import FullWidthWord from "@/app/components/ManifAnimation";
+import { motion, useMotionValue } from "framer-motion";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from 'react';
+import { Suspense } from "react";
+import ArtistsResidencyAndCalendar from "./ArtistsResidencyAndCalendar";
 
-// ✅ Define the props type
 interface CerebroProps {
   home: any;
   filteredLocalidades: any[];
@@ -16,7 +16,6 @@ interface CerebroProps {
   children: ReactNode;
 }
 
-// ✅ Add the props type to the component
 export default function Cerebro({
   home,
   filteredLocalidades,
@@ -24,20 +23,39 @@ export default function Cerebro({
   existingLocalidadeDocs,
   children,
 }: CerebroProps) {
-  const navRef = useRef(null);
-  const typeRef = useRef(null);
-  const lenisControlRef = useRef(null);
+  const lenisRef = useRef<Lenis | null>(null);
+  const lenisScrollY = useMotionValue(0);
   const searchParams = useSearchParams();
 
   const [activeButton, setActiveButton] = useState("Sobre");
   const [isAtBottom, setIsAtBottom] = useState(false);
-  const [selectedType, setSelectedType] = useState(null);
-  const [selectedLocalidade, setSelectedLocalidade] = useState(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [selectedLocalidade, setSelectedLocalidade] = useState<string | null>(null);
 
-  const handleButtonClick = (buttonName: string) => {
-    setActiveButton(buttonName);
-  };
+  // Initialize Lenis only once
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.02,
+      duration: 0.8,
+      easing: (t) => t,
+    });
 
+    lenisRef.current = lenis;
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      lenisScrollY.set(lenis.scroll);
+      requestAnimationFrame(raf);
+    };
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+
+  // Check scroll position for bottom detection
   useEffect(() => {
     const checkScrollPosition = () => {
       const isBottom =
@@ -51,27 +69,21 @@ export default function Cerebro({
     return () => window.removeEventListener("scroll", checkScrollPosition);
   }, []);
 
-
+  // Sync selectedLocalidade with search params
   useEffect(() => {
-    const filter = searchParams.get('localidade');
-
+    const filter = searchParams.get("localidade");
     setSelectedLocalidade(filter);
 
     if (filter) {
       setActiveButton("Apoios");
-    }
-    else {
+    } else {
       setActiveButton("Sobre");
     }
-  }, [searchParams]); // ✅ react to actual pathname changes
+  }, [searchParams]);
 
-
-  // ✅ Automatically activate "Apoios" if selectedLocalidade is not null
-  useEffect(() => {
-    if (selectedLocalidade) {
-      setActiveButton("Apoios");
-    }
-  }, [selectedLocalidade]);
+  const handleButtonClick = (buttonName: string) => {
+    setActiveButton(buttonName);
+  };
 
   const getNavPosition = () => {
     switch (activeButton) {
@@ -89,9 +101,9 @@ export default function Cerebro({
       case "Residências":
         return { top: "calc(50vh + 4px)" };
       case "Obras":
-        return { top: "calc(50vh + 48px)" };
+        return { top: "calc(50vh + 67px)" };
       case "Mediação":
-        return { top: "calc(50vh + 92px)" };
+        return { top: "calc(50vh + 110px)" };
       default:
         return { top: "calc(50vh + 4px)" };
     }
@@ -105,13 +117,11 @@ export default function Cerebro({
         <div className="w-[14px] h-[14px] fixed right-[14px] top-[calc(50vh-7px)] bg-black z-40"></div>
         <div className="w-[14px] h-[14px] fixed left-[14px] top-[calc(50vh-7px)] bg-black z-40"></div>
         <div
-          ref={navRef}
           className="w-[14px] h-[14px] fixed bottom-[14px] bg-black z-40 transition-all duration-500"
           style={getNavPosition()}
         ></div>
         <div className="w-[14px] h-[14px] fixed right-[14px] bottom-[14px] bg-black z-40"></div>
         <div
-          ref={typeRef}
           className="w-[14px] h-[14px] fixed left-[calc(50vw-7px)] bg-black z-40 transition-all duration-500"
           style={getTypePosition()}
         ></div>
@@ -120,9 +130,10 @@ export default function Cerebro({
       </div>
 
       {/* Animation & Calendar */}
-      <FullWidthWord ref={lenisControlRef} />
+      <FullWidthWord lenisScrollY={lenisScrollY} />
 
-      <Suspense fallback={null}>
+      <Suspense>
+        {/* Replace with your actual ArtistsResidencyAndCalendar component */}
         <ArtistsResidencyAndCalendar
           home={home}
           selectedType={selectedType}
@@ -137,7 +148,6 @@ export default function Cerebro({
         </ArtistsResidencyAndCalendar>
       </Suspense>
 
-
       {/* Bottom Buttons */}
       {isAtBottom && selectedLocalidade != null && (
         <motion.div
@@ -149,8 +159,7 @@ export default function Cerebro({
         >
           <div className="w-[50%]">
             <button
-              className={`text-link ${activeButton === "Sobre" ? "active text-black" : ""
-                }`}
+              className={`text-link ${activeButton === "Sobre" ? "active text-black" : ""}`}
               onClick={() => handleButtonClick("Sobre")}
               onMouseEnter={() => handleButtonClick("Sobre")}
             >
@@ -159,8 +168,7 @@ export default function Cerebro({
           </div>
           <div className="w-[50%]">
             <button
-              className={`text-link ${activeButton === "Apoios" ? "active text-black" : ""
-                }`}
+              className={`text-link ${activeButton === "Apoios" ? "active text-black" : ""}`}
               onClick={() => handleButtonClick("Apoios")}
               onMouseEnter={() => handleButtonClick("Apoios")}
             >

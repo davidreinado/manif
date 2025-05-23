@@ -28,7 +28,8 @@
     "react-intersection-observer": "^9.15.1",
     "react-pixelify": "^0.2.2",
     "swiper": "^11.2.6",
-    "use-isomorphic-layout-effect": "^1.2.0"
+    "use-isomorphic-layout-effect": "^1.2.0",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@slicemachine/adapter-next": "^0.3.76",

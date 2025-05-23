@@ -43,20 +43,11 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
           <SwiperSlide key={index} className="w-full">
             {imgItem.imagem?.url && (
               <div className="relative w-full cursor-move">
-                {/* <ImagePixelated
-                  src={imgItem.imagem.url}
-                  width={imgItem.imagem.dimensions?.width || 1200}
-                  height={imgItem.imagem.dimensions?.height || 800}
-                  pixelSize={pixelSize}
-                  centered
-                /> */}
                 <Image
                   src={imgItem.imagem.url}
                   width={imgItem.imagem.dimensions?.width || 1200}
                   height={imgItem.imagem.dimensions?.height || 800}
                   alt={imgItem.imagem.alt || `Carrossel ${index + 1}`}
-                  // pixelSize={pixelSize}
-                  // centered
                 />
                 {imgItem.copyright && (
                   <p className="text-xs mt-2 text-right">

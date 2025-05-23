@@ -19,7 +19,7 @@ export default function ClientLayoutWrapper({
   children: React.ReactNode;
 }) {
   return (
-    <Suspense fallback={null}>
+    <Suspense>
       <Cerebro
         home={home}
         filteredLocalidades={filteredLocalidades}

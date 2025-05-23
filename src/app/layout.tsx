@@ -53,9 +53,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           filteredAgentes={filteredAgentes}
           existingLocalidadeDocs={existingLocalidadeDocs}
         >
-          {children}
+            {children}
         </ClientLayoutWrapper>
-        
+
         <PrismicPreview repositoryName={repositoryName} />
         {/* fake scroll buffer */}
         <div className="h-[20px] pointer-events-none" />
@@ -64,5 +64,5 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   );
 
-  return(<></>)
+  return (<></>)
 }

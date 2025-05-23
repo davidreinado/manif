@@ -5,27 +5,27 @@ import Lenis from '@studio-freight/lenis';
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import slugify from "@sindresorhus/slugify";
+import { useFiltroStore } from '@/app/stores/useFiltroStore';
 import { useRouter } from 'next/navigation';
 
-export default function Calendar({ home, selectedType, setSelectedType, agenda, localidades: localidadesPages = [], agentes: agentesPages = [], setFiltro, setActiveButton }) {
-  const [currentPath, setCurrentPath] = useState('');
+export default function Calendar({ home, selectedType, setSelectedType, agenda, localidades: localidadesPages = [], agentes: agentesPages = [], setActiveButton }) {
   const districts = [...new Set(home.data.agenda.map(item => item.distrito))];
   const years = [...new Set(home.data.agenda.map(item => item.ano))];
   const months = [...new Set(home.data.agenda.map(item => item.mes))];
-
+  const setFiltro = useFiltroStore((state) => state.setFiltro);
   const [selectedYear, setSelectedYear] = useState(years[0]);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [clickedType, setClickedType] = useState(null);
   const [selectedCombinedFilter, setSelectedCombinedFilter] = useState(null);
-  const [isClient, setIsClient] = useState(false);
-
-  const router = useRouter();
+  // const [isClient, setIsClient] = useState(false);
   const typeOptions = {
-    "Residências": "Artistas",
+    "Residências": "Artistas Residentes",
     "Obras": "Exposições",
     "Mediação": "Mediação"
   };
+
+  const router = useRouter();
 
 
   const filteredLocalidades = [...new Set(
@@ -48,9 +48,9 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const localidadesUIDs = localidadesPages.map(l => slugify(l.localidade));
   const agentesUIDs = agentesPages.map(a => slugify(a.agente));
 
-const combinedFilters = selectedType !== null
-  ? allAgentes.map(agente => ({ type: 'agente', label: agente }))
-  : [
+  const combinedFilters = selectedType !== null
+    ? allAgentes.map(agente => ({ type: 'agente', label: agente }))
+    : [
       ...allLocalidades.map(loc => ({ type: 'localidade', label: loc })),
     ];
 
@@ -85,15 +85,7 @@ const combinedFilters = selectedType !== null
   const [hoveredType, setHoveredType] = useState(null);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-    useEffect(() => {
-    console.log("tipo é " + selectedType)
-  }, [selectedType]);
-
-  useEffect(() => {
-    if (!isClient || !scrollContainerRef.current) return;
+    if (!scrollContainerRef.current) return;
 
     if (!lenisRef.current) {
       lenisRef.current = new Lenis({
@@ -102,7 +94,6 @@ const combinedFilters = selectedType !== null
         smoothWheel: true,
         duration: 1.2,
         easing: (t) => t,
-        // easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         gestureDirection: 'vertical',
         smoothTouch: true,
         touchMultiplier: 2,
@@ -125,33 +116,25 @@ const combinedFilters = selectedType !== null
         lenisRef.current = null;
       }
     };
-  }, [isClient, filteredAgenda]);
+  }, [filteredAgenda]);
 
   const toggleDistrict = (district) => {
     setSelectedDistrict(prev => prev === district ? null : district);
   };
 
   const toggleType = (type) => {
-    setClickedType(prev => {
-      const newType = prev === type ? null : type;
-      setSelectedType(newType);
-      setSelectedCombinedFilter(null);
-      return newType;
-    });
+    const newType = clickedType === type ? null : type;
+    setClickedType(newType);            // ✅ OK
+    setSelectedType(newType);          // ✅ Now called outside of render phase
+    setSelectedCombinedFilter(null);   // ✅ Also safe here
   };
+
 
   const toggleMonth = (month) => {
     setSelectedMonth(prev => prev === month ? null : month);
   };
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    setActiveButton("Sobre");
-    setFiltro(slug);
-    router.push(`/filtro/${slug}`, undefined, { shallow: true });
-  };
-
-  if (!isClient) return null;
+  // if (!isClient) return null;
 
   return (
     <div className="w-full py-[14px] pl-0 md:pl-[21px] flex flex-col lg:flex-row">
@@ -194,7 +177,7 @@ const combinedFilters = selectedType !== null
                 const isOtherHovered = hoveredType && hoveredType !== value;
 
                 const className = `
-    text-link text-[1.6rem] w-full text-left px-2 text-cc mb-[20px]
+    text-link text-[1.6rem] w-full text-left px-2 text-cc mb-[20px] leading-[1.4]
     ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
     ${isHovered ? 'text-black font-bold' : ''}
     ${isOtherHovered ? 'text-[#808080]' : ''}
@@ -221,7 +204,7 @@ const combinedFilters = selectedType !== null
       </div>
 
       <div className="w-full lg:w-[80%] flex flex-col pt-[14px]">
-        <div className="flex mb-[15px] gap-[20px] ">
+        <div className="flex mb-[12px] gap-[20px] ">
           <div className="flex flex-wrap gap-[20px]">
             {years.map((year) => (
               <button
@@ -252,7 +235,7 @@ const combinedFilters = selectedType !== null
         </div>
 
         {selectedYear && localidadesUIDs.length > 0 && (
-          <div className="flex gap-[20px] max-w-full overflow-x-scroll whitespace-nowrap mb-[14px] items-center">
+          <div className="flex gap-[20px] max-w-full overflow-x-scroll whitespace-nowrap mb-[12px] items-center">
             {combinedFilters.map(({ type, label }) => {
               const slug = slugify(label);
               const isAgente = type === 'agente';
@@ -274,7 +257,7 @@ const combinedFilters = selectedType !== null
                 (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
 
               const className = `
-    text-link text-[1.6rem] font-cc px-2 py-1 whitespace-nowrap leading-[1.4]
+    text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4]
     ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
     ${isHovered ? 'active' : ''}
     ${isOtherHovered ? 'text-[#808080]' : ''}
@@ -297,9 +280,10 @@ const combinedFilters = selectedType !== null
                   setActiveButton("Apoios");
                   window.history.replaceState({}, '', `?localidade=${slug}`);
                   setFiltro("");
-                } else {
-                  setFiltro(slug);
-                }
+                } 
+                // else {
+                //   setFiltro(slug);
+                // }
               };
 
               return (
@@ -307,20 +291,18 @@ const combinedFilters = selectedType !== null
                   {isAgente && hasPage ? (
                     <Link
                       href={`/filtro/${slug}`}
-                      scroll={false} // Prevent default scroll behavior
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
+                      scroll={false}
+                      prefetch={true}
                       className={className}
-                      onClick={(e) => {
-                        e.preventDefault(); // Prevent default navigation
-                        setActiveButton("Sobre");
-                        setFiltro(slug);
-                        // Use Next.js router to navigate
-                        router.push(`/filtro/${slug}`, undefined, { shallow: true });
-                      }}
                     >
                       {label}
                     </Link>
+
+    //                 <button className={className} onClick={() => {
+    // router.push(`/filtro/${slug}`, { shallow: true }); // ✅ use shallow
+    //                 }}>
+    //                   {label}
+    //                 </button>
                   ) : (
                     <button
                       onClick={handleClick}
@@ -337,48 +319,49 @@ const combinedFilters = selectedType !== null
 
           </div>
         )}
-
-        <section
-          ref={scrollContainerRef}
-          className="mb-8 h-[calc(100vh-130px)] overflow-y-auto scroll-container"
-        >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
-            >
-              {filteredAgenda.length > 0 ? (
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
-                  variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-                  className="space-y-4"
-                >
-                  {[...filteredAgenda].reverse().map((event, index) => (
-                    <motion.div
-                      key={event.id ?? `event-${index}`}
-                      variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
-                      transition={{ duration: 0.125, ease: "easeOut" }}
-                    >
-                      <EventItem event={event} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.p
-                  key="empty"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
-                >
-                  Nenhum evento encontrado com os filtros selecionados.
-                </motion.p>
-              )}
-            </motion.div>
-          </AnimatePresence>
-        </section>
+        <div>
+          <section
+            ref={scrollContainerRef}
+            className="h-[calc(100vh-102px)] overflow-y-auto scroll-container"
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
+              >
+                {filteredAgenda.length > 0 ? (
+                  <motion.div
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+                    className="space-y-4"
+                  >
+                    {[...filteredAgenda].reverse().map((event, index) => (
+                      <motion.div
+                        key={event.id ?? `event-${index}`}
+                        variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
+                        transition={{ duration: 0.125, ease: "easeOut" }}
+                      >
+                        <EventItem event={event} />
+                      </motion.div>
+                    ))}
+                  </motion.div>
+                ) : (
+                  <motion.p
+                    key="empty"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.3 }}
+                    className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
+                  >
+                    Nenhum evento encontrado com os filtros selecionados.
+                  </motion.p>
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </section>
+        </div>
       </div>
     </div>
   );
@@ -388,7 +371,7 @@ function EventItem({ event }) {
   return (
     <div className="border-b pb-4 mb-4">
       <div className="flex flex-wrap md:flex-nowrap gap-x-[14px] gap-y-[0px]">
-        <div className="w-1/2 md:w-[25%] order-1 md:order-1 flex flex-col">
+        <div className="w-1/2 md:w-[20%] order-1 md:order-1 flex flex-col">
           <span className="font-cc font-bold text-[1.8rem] lowercase">
             {event.data_inicial} {event.mes}
             {event.data_final && `-${event.data_final}`}
@@ -396,7 +379,7 @@ function EventItem({ event }) {
           <span className="font-ramboia text-[1.2rem]">{event.horas}</span>
         </div>
 
-        <div className="w-1/2 md:w-[25%] order-2 md:order-3 flex flex-col justify-between">
+        <div className="w-1/2 md:w-[20%] order-2 md:order-3 flex flex-col justify-between">
           {event.local && (
             <PrismicRichText
               field={event.local}
@@ -409,7 +392,7 @@ function EventItem({ event }) {
           )}
         </div>
 
-        <div className="w-full md:w-[50%] order-3 md:order-2 flex flex-col">
+        <div className="w-full md:w-[60%] order-3 md:order-2 flex flex-col">
           <PrismicRichText
             field={event.titulo}
             components={{
