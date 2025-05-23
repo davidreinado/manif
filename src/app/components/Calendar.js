@@ -20,7 +20,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const [selectedCombinedFilter, setSelectedCombinedFilter] = useState(null);
   // const [isClient, setIsClient] = useState(false);
   const typeOptions = {
-    "Residências": "Artistas Residentes",
+    "Residências": "Artistas \n Residentes",
     "Obras": "Exposições",
     "Mediação": "Mediação"
   };
@@ -151,8 +151,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
     ${isSelected && !hoveredDistrict ? 'text-black font-bold active' : ''}
     ${isHovered ? 'text-black font-bold' : ''}
-    ${isOtherHovered ? 'text-[#808080]' : ''}
-    ${!isSelected && !hoveredDistrict ? 'text-[#808080] hover:text-black' : ''}
+    ${isOtherHovered ? 'opacity-70' : ''}
+    ${!isSelected && !hoveredDistrict ? 'opacity-70 hover:text-black' : ''}
   `;
                 return (
                   <li key={district}>
@@ -180,8 +180,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     text-link text-[1.6rem] w-full text-left px-2 text-cc mb-[20px] leading-[1.4]
     ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
     ${isHovered ? 'text-black font-bold' : ''}
-    ${isOtherHovered ? 'text-[#808080]' : ''}
-    ${!isSelected && !hoveredType ? 'text-[#808080] hover:text-black' : ''}
+    ${isOtherHovered ? 'opacity-70' : ''}
+    ${!isSelected && !hoveredType ? 'opacity-70 hover:text-black' : ''}
   `;
 
                 return (
@@ -213,7 +213,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   setSelectedYear(year);
                   setSelectedMonth(null);
                 }}
-                className={`font-cc text-[1.8rem] uppercase ${selectedYear === year ? 'text-black' : 'text-[#808080] hover:text-black'}`}
+                className={`font-cc text-[1.8rem] uppercase ${selectedYear === year ? 'text-black' : 'opacity-70 hover:text-black'}`}
               >
                 {year}
               </button>
@@ -225,7 +225,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 <button
                   key={month}
                   onClick={() => toggleMonth(month)}
-                  className={`text-[1.8rem] font-cc uppercase ${selectedMonth === month ? 'text-[#808080] font-bold active' : 'text-black hover:text-[#808080]'}`}
+                  className={`text-[1.8rem] font-cc uppercase ${selectedMonth === month ? 'opacity-70 font-bold active' : 'text-black hover:opacity-70'}`}
                 >
                   {month}
                 </button>
@@ -260,8 +260,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4]
     ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
     ${isHovered ? 'active' : ''}
-    ${isOtherHovered ? 'text-[#808080]' : ''}
-    ${!isSelected && !hoveredCombinedFilter ? 'text-link text-[#808080] hover:text-black' : ''}
+    ${isOtherHovered ? 'opacity-70' : ''}
+    ${!isSelected && !hoveredCombinedFilter ? 'text-link opacity-70 hover:text-black' : ''}
   `;
 
               const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });

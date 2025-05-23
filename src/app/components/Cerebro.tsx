@@ -99,13 +99,13 @@ export default function Cerebro({
   const getTypePosition = () => {
     switch (selectedType) {
       case "Residências":
-        return { top: "50.5vh" };
+        return { top: "calc(50vh + 4px)" };
       case "Obras":
-        return { top: "60.5vh" };
+        return { top: "calc(50vh + 67px)" };
       case "Mediação":
-        return { top: "67.5vh" };
+        return { top: "calc(50vh + 110px)" };
       default:
-        return { top: "50.5vh" };
+        return { top: "calc(50vh + 4px)" };
     }
   };
 
