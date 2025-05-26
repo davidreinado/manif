@@ -2,7 +2,7 @@ import { PrismicRichText } from "@prismicio/react";
 
 export default function EventItem({ event }) {
     return (
-      <div className="border-b pb-4 mb-4">
+      <div className="border-b pb-4 mb-4 border-black">
         <div className="flex items-stretch gap-[14px]">
           {/* Date & Time Column */}
           <div className="w-[25%] flex flex-col">

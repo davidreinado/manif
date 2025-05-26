@@ -8,6 +8,7 @@ import slugify from "@sindresorhus/slugify";
 import { useFiltroStore } from '@/app/stores/useFiltroStore';
 import { useRouter } from 'next/navigation';
 import CustomScrollbar from '@/app/components/CustomScrollbar';
+import { useThemeStore } from "@/app/stores/useThemeStore"; // Make sure this import is present
 
 export default function Calendar({ home, selectedType, setSelectedType, agenda, localidades: localidadesPages = [], agentes: agentesPages = [], setActiveButton }) {
   // State declarations
@@ -34,6 +35,10 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const [hoveredDistrict, setHoveredDistrict] = useState(null);
   const [hoveredType, setHoveredType] = useState(null);
   const [hoveredCombinedFilter, setHoveredCombinedFilter] = useState(null);
+
+  const secondaryColor = useThemeStore((state) => state.secondaryColor);
+  const setSecondaryColor = useThemeStore((state) => state.setSecondaryColor);
+
 
   // Filtered data calculations
   const filteredLocalidades = [...new Set(
@@ -351,13 +356,11 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
               maskComposite: 'intersect',
               WebkitMaskSize: '100% 100%',
               WebkitMaskRepeat: 'no-repeat'
-            }}s
+            }}
             className="absolute top-0 left-0 right-[7px] h-[6rem] z-10
-                      backdrop-blur-[1px] bg-white/30 pointer-events-none
+                      backdrop-blur-[1px] bg-red/30 pointer-events-none
                       opacity-0 transition-opacity duration-300 will-change-opacity"
           />
-
-
 
           {isMounted && (
             <CustomScrollbar direction="vertical">
@@ -384,7 +387,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                             variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
                             transition={{ duration: 0.125, ease: "easeOut" }}
                           >
-                            <EventItem event={event} />
+                            <EventItem event={event} secondaryColor={secondaryColor} />
                           </motion.div>
                         ))}
                       </motion.div>
@@ -411,9 +414,9 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   );
 }
 
-function EventItem({ event }) {
+function EventItem({ event, secondaryColor }) {
   return (
-    <div className="border-b pb-4 mb-4">
+    <div className="border-b pb-4 mb-4" style={{ borderColor: secondaryColor  }} >
       <div className="flex flex-wrap md:flex-nowrap gap-x-[14px] gap-y-[0px]">
         <div className="w-1/2 md:w-[20%] order-1 md:order-1 flex flex-col">
           <span className="font-cc font-bold text-[1.8rem] lowercase">

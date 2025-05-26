@@ -13,51 +13,51 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
     setIsMounted(true);
   }, []);
 
-useEffect(() => {
-  if (!isMounted || !scrollContainerRef.current) return;
+  useEffect(() => {
+    if (!isMounted || !scrollContainerRef.current) return;
 
-  const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
-  const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]') as HTMLElement | null;
-  if (!nativeScrollContainer) return;
+    const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
+    const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]') as HTMLElement | null;
+    if (!nativeScrollContainer) return;
 
-  const lenis = new Lenis({
-    wrapper: nativeScrollContainer,
-    content: nativeScrollContainer.firstElementChild as HTMLElement,
-    smoothWheel: true,
-    duration: 1.2,
-    wheelMultiplier: 1.1,
-    touchMultiplier: 1.4,
-    infinite: false,
-  });
+    const lenis = new Lenis({
+      wrapper: nativeScrollContainer,
+      content: nativeScrollContainer.firstElementChild as HTMLElement,
+      smoothWheel: true,
+      duration: 1.2,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.4,
+      infinite: false,
+    });
 
-  const handleScroll = () => {
-    if (!frostyRef.current || !nativeScrollContainer) return;
-    const scrollTop = nativeScrollContainer.scrollTop;
-    const opacity = Math.min(scrollTop / 30, 1);
-    frostyRef.current.style.opacity = `${opacity}`;
-    frostyRef.current.style.willChange = 'opacity';
-  };
+    const handleScroll = () => {
+      if (!frostyRef.current || !nativeScrollContainer) return;
+      const scrollTop = nativeScrollContainer.scrollTop;
+      const opacity = Math.min(scrollTop / 30, 1);
+      frostyRef.current.style.opacity = `${opacity}`;
+      frostyRef.current.style.willChange = 'opacity';
+    };
 
-  // ✅ Named wrapper for Lenis scroll event
-  const onLenisScroll = () => handleScroll();
+    // ✅ Named wrapper for Lenis scroll event
+    const onLenisScroll = () => handleScroll();
 
-  nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-  lenis.on('scroll', onLenisScroll);
+    nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    lenis.on('scroll', onLenisScroll);
 
-  lenisRef.current = lenis;
+    lenisRef.current = lenis;
 
-  const raf = (time: number) => {
-    lenis.raf(time);
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
     requestAnimationFrame(raf);
-  };
-  requestAnimationFrame(raf);
 
-  return () => {
-    nativeScrollContainer.removeEventListener('scroll', handleScroll);
-    lenis.off('scroll', onLenisScroll); // ✅ Now valid
-    lenis.destroy();
-  };
-}, [isMounted]);
+    return () => {
+      nativeScrollContainer.removeEventListener('scroll', handleScroll);
+      lenis.off('scroll', onLenisScroll); // ✅ Now valid
+      lenis.destroy();
+    };
+  }, [isMounted]);
 
 
   return (

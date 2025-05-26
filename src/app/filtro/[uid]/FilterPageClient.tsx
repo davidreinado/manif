@@ -5,11 +5,14 @@ import { useParams } from "next/navigation";
 import { SliceZone } from "@prismicio/react";
 import { components } from "@/slices";
 import { createClient } from "@/prismicio";
+import { useThemeStore } from "@/app/stores/useThemeStore"; // Adjust path if needed
 
 export default function FilterPageClient() {
     const params = useParams(); // ✅ Next.js hook
     const uid = params?.uid as string;
     const [filtroDoc, setFiltroDoc] = useState<any>(null);
+    const setPrimaryColor = useThemeStore((state) => state.setPrimaryColor);
+    const setSecondaryColor = useThemeStore((state) => state.setSecondaryColor);
 
     useEffect(() => {
         if (!uid) return;
@@ -18,6 +21,20 @@ export default function FilterPageClient() {
             const client = createClient();
             const doc = await client.getByUID("filtro", uid);
             setFiltroDoc(doc);
+
+            // Optionally set theme colors from Prismic data
+            if (doc?.data?.fundo == "Rosa") {
+                setPrimaryColor("#FC3370");
+                setSecondaryColor("#FAB617");
+            }
+            else if (doc?.data?.fundo == "Laranja") {
+                setPrimaryColor("#FF5A16");
+                setSecondaryColor("#FAB617");
+            }
+            else if (doc?.data?.fundo == "Amarelo") {
+                setPrimaryColor("#FAB617");
+                setSecondaryColor("#FC3370");
+            }
         };
 
         fetchData();
