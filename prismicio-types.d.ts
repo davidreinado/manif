@@ -57,6 +57,17 @@ interface FiltroDocumentData {
   titulo: prismic.KeyTextField;
 
   /**
+   * Fundo field in *Filtro*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: filtro.fundo
+   * - **Tab**: Main
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  fundo: prismic.SelectField<"Laranja" | "Amarelo" | "Rosa">;
+
+  /**
    * Slice Zone field in *Filtro*
    *
    * - **Field Type**: Slice Zone

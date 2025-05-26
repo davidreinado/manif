@@ -1,16 +1,13 @@
 "use client";
-
-import { AnimatePresence, motion } from "framer-motion";
-import { useParams } from 'next/navigation';
 import { useEffect, useState, useRef } from "react";
 import Lenis from '@studio-freight/lenis';
+import CustomScrollbar from '@/app/components/CustomScrollbar';
 
 export default function FiltroClientWrapper({ children }: { children: React.ReactNode }) {
-  const params = useParams();
-  const uid = params?.uid as string;
   const [isMounted, setIsMounted] = useState(false);
   const lenisRef = useRef<Lenis | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const frostyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -19,15 +16,39 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
   useEffect(() => {
     if (!isMounted || !scrollContainerRef.current) return;
 
+    const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
+    const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]');
+
+    if (!nativeScrollContainer) return;
+
+    // Initialize Lenis
     const lenis = new Lenis({
-      wrapper: scrollContainerRef.current,
-      content: scrollContainerRef.current,
+      wrapper: nativeScrollContainer,
+      content: nativeScrollContainer.firstElementChild as HTMLElement,
       smoothWheel: true,
-      easing: (t) => t,
-      duration: 1.0,
-      wheelMultiplier: 1.2,
-      touchMultiplier: 1.5,
+      duration: 1.2,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.4,
       infinite: false,
+    });
+
+    // Track scroll position for frosty effect
+    const handleScroll = () => {
+      if (!frostyRef.current || !nativeScrollContainer) return;
+
+      // Get scroll position from the native container
+      const scrollTop = nativeScrollContainer.scrollTop;
+      const opacity = Math.min(scrollTop / 30, 1);
+
+      // Update frosty effect
+      frostyRef.current.style.opacity = `${opacity}`;
+      frostyRef.current.style.willChange = 'opacity';
+    };
+
+    // Use both Lenis and native scroll listener for reliability
+    nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    lenis.on('scroll', ({ scroll }) => {
+      handleScroll();
     });
 
     lenisRef.current = lenis;
@@ -36,41 +57,48 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
       lenis.raf(time);
       requestAnimationFrame(raf);
     };
-
     requestAnimationFrame(raf);
 
-    const preventDefault = (e: Event) => {
-      if (lenis.isScrolling) {
-        e.preventDefault();
-      }
-    };
-
-    const el = scrollContainerRef.current;
-    el.addEventListener("wheel", preventDefault, { passive: false });
-    el.addEventListener("touchmove", preventDefault, { passive: false });
-
     return () => {
+      nativeScrollContainer.removeEventListener('scroll', handleScroll);
+      lenis.off('scroll');
       lenis.destroy();
-      el.removeEventListener("wheel", preventDefault);
-      el.removeEventListener("touchmove", preventDefault);
     };
   }, [isMounted]);
 
   return (
-    <div>
-      {isMounted && children && (
-        <AnimatePresence mode="wait">
-          <motion.div
-            initial={{  y: 80 }}
-            animate={{  y: 80 }}
-            exit={{  y: 80 }}
-            transition={{ duration: 0.225 }}
-            ref={scrollContainerRef}
-            className="max-h-[calc(100vh-76px)] overflow-y-auto z-50 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] overscroll-contain pb-[15px] touch-pan-y"
-          >
-            {children}
-          </motion.div>
-        </AnimatePresence>
+    <div className="pt-[85px] relative">
+      {/* Frosty overlay - now properly positioned */}
+      <div
+        ref={frostyRef}
+        className="absolute top-0 left-0 right-0 h-[6rem] z-10
+                  backdrop-blur-[1px] bg-white/30 pointer-events-none
+                  opacity-0 transition-opacity duration-300"
+        style={{
+          top: '85px', // Adjust for your header
+          width: 'calc(100% - 12px)', // Adjust for scrollbar
+          WebkitMaskImage: `
+      linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%),
+      linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)
+    `,
+          WebkitMaskComposite: 'intersect',
+          maskImage: `
+      linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%),
+      linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)
+    `,
+          maskComposite: 'intersect',
+          WebkitMaskSize: '100% 100%',
+          WebkitMaskRepeat: 'no-repeat'
+        }}
+
+      />
+
+      {isMounted && (
+        <CustomScrollbar direction="vertical">
+          <div ref={scrollContainerRef} className="max-h-[calc(100vh-81px)] mr-[7px]">
+            <div>{children}</div>
+          </div>
+        </CustomScrollbar>
       )}
     </div>
   );

@@ -7,6 +7,7 @@ import { motion, useMotionValue } from "framer-motion";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import ArtistsResidencyAndCalendar from "./ArtistsResidencyAndCalendar";
+import CustomScrollbar from '@/app/components/CustomScrollbar';
 
 interface CerebroProps {
   home: any;
@@ -130,7 +131,7 @@ export default function Cerebro({
       </div>
 
       {/* Animation & Calendar */}
-      <FullWidthWord lenisScrollY={lenisScrollY} />
+        <FullWidthWord lenisScrollY={lenisScrollY} />
 
       <Suspense>
         {/* Replace with your actual ArtistsResidencyAndCalendar component */}

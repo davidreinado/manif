@@ -19,6 +19,14 @@
           "placeholder": ""
         }
       },
+      "fundo": {
+        "type": "Select",
+        "config": {
+          "label": "Fundo",
+          "placeholder": "",
+          "options": ["Laranja", "Amarelo", "Rosa"]
+        }
+      },
       "slices": {
         "type": "Slices",
         "fieldset": "Slice Zone",

@@ -4,6 +4,8 @@ import { PrismicPreview } from "@prismicio/next";
 import { repositoryName, createClient } from "@/prismicio";
 import slugify from "@sindresorhus/slugify";
 import ClientLayoutWrapper from "./components/ClientLayoutWrapper";
+// _app.tsx or layout.tsx
+import 'overlayscrollbars/overlayscrollbars.css';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const client = createClient();

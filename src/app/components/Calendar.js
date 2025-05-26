@@ -7,8 +7,10 @@ import Link from "next/link";
 import slugify from "@sindresorhus/slugify";
 import { useFiltroStore } from '@/app/stores/useFiltroStore';
 import { useRouter } from 'next/navigation';
+import CustomScrollbar from '@/app/components/CustomScrollbar';
 
 export default function Calendar({ home, selectedType, setSelectedType, agenda, localidades: localidadesPages = [], agentes: agentesPages = [], setActiveButton }) {
+  // State declarations
   const districts = [...new Set(home.data.agenda.map(item => item.distrito))];
   const years = [...new Set(home.data.agenda.map(item => item.ano))];
   const months = [...new Set(home.data.agenda.map(item => item.mes))];
@@ -18,7 +20,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [clickedType, setClickedType] = useState(null);
   const [selectedCombinedFilter, setSelectedCombinedFilter] = useState(null);
-  // const [isClient, setIsClient] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const typeOptions = {
     "Residências": "Artistas \n Residentes",
     "Obras": "Exposições",
@@ -26,8 +28,14 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   };
 
   const router = useRouter();
+  const lenisRef = useRef(null);
+  const scrollContainerRef = useRef(null);
+  const frostyRef = useRef(null);
+  const [hoveredDistrict, setHoveredDistrict] = useState(null);
+  const [hoveredType, setHoveredType] = useState(null);
+  const [hoveredCombinedFilter, setHoveredCombinedFilter] = useState(null);
 
-
+  // Filtered data calculations
   const filteredLocalidades = [...new Set(
     home.data.agenda
       .filter(item => selectedType ? item.tipo === selectedType : true)
@@ -54,8 +62,6 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
       ...allLocalidades.map(loc => ({ type: 'localidade', label: loc })),
     ];
 
-  const [hoveredCombinedFilter, setHoveredCombinedFilter] = useState(null); // ✅ ADD THIS HERE
-
   const filteredAgenda = useMemo(() => {
     return home.data.agenda.filter((item) => {
       return (
@@ -70,74 +76,84 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
           : true)
       );
     });
-  }, [
-    home.data.agenda,
-    selectedYear,
-    selectedMonth,
-    selectedDistrict,
-    selectedType,
-    selectedCombinedFilter,
-  ]);
+  }, [home.data.agenda, selectedYear, selectedMonth, selectedDistrict, selectedType, selectedCombinedFilter]);
 
-  const scrollContainerRef = useRef(null);
-  const lenisRef = useRef(null);
-  const [hoveredDistrict, setHoveredDistrict] = useState(null);
-  const [hoveredType, setHoveredType] = useState(null);
-
+  // Lenis initialization with optimized frosty effect
   useEffect(() => {
-    if (!scrollContainerRef.current) return;
-
-    if (!lenisRef.current) {
-      lenisRef.current = new Lenis({
-        wrapper: scrollContainerRef.current,
-        content: scrollContainerRef.current,
-        smoothWheel: true,
-        duration: 1.2,
-        easing: (t) => t,
-        gestureDirection: 'vertical',
-        smoothTouch: true,
-        touchMultiplier: 2,
-        infinite: false,
-      });
-
-      const raf = (time) => {
-        lenisRef.current?.raf(time);
-        requestAnimationFrame(raf);
-      };
-      requestAnimationFrame(raf);
-    }
-
-    // Update Lenis when content changes
-    lenisRef.current?.resize();
+    setIsMounted(true);
 
     return () => {
       if (lenisRef.current) {
         lenisRef.current.destroy();
-        lenisRef.current = null;
       }
     };
-  }, [filteredAgenda]);
+  }, []);
 
+  useEffect(() => {
+    if (!isMounted || !scrollContainerRef.current) return;
+
+    const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
+    const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]');
+
+    if (!nativeScrollContainer) return;
+
+    const lenis = new Lenis({
+      wrapper: nativeScrollContainer,
+      content: nativeScrollContainer.firstElementChild,
+      smoothWheel: true,
+      duration: 1.2,
+      easing: (t) => t,
+      gestureDirection: 'vertical',
+      smoothTouch: true,
+      touchMultiplier: 1.5,
+      infinite: false,
+    });
+
+    // Optimized scroll handler for frosty effect
+    const handleScroll = ({ scroll }) => {
+      if (!frostyRef.current) return;
+
+      // Direct style manipulation for better performance
+      const opacity = Math.min(scroll / 30, 1);
+      frostyRef.current.style.opacity = opacity;
+      frostyRef.current.style.willChange = 'opacity';
+    };
+
+    lenis.on('scroll', handleScroll);
+    lenisRef.current = lenis;
+
+    const raf = (time) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.off('scroll', handleScroll);
+      lenis.destroy();
+    };
+  }, [isMounted, filteredAgenda]);
+
+  // Handler functions
   const toggleDistrict = (district) => {
     setSelectedDistrict(prev => prev === district ? null : district);
   };
 
   const toggleType = (type) => {
     const newType = clickedType === type ? null : type;
-    setClickedType(newType);            // ✅ OK
-    setSelectedType(newType);          // ✅ Now called outside of render phase
-    setSelectedCombinedFilter(null);   // ✅ Also safe here
+    setClickedType(newType);
+    setSelectedType(newType);
+    setSelectedCombinedFilter(null);
   };
-
 
   const toggleMonth = (month) => {
     setSelectedMonth(prev => prev === month ? null : month);
   };
 
-  // if (!isClient) return null;
-
+  // Render
   return (
     <div className="w-full py-[14px] pl-0 md:pl-[21px] flex flex-col lg:flex-row">
+      {/* Left sidebar */}
       <div className="w-full lg:w-[20%] mb-4 lg:mb-0 lg:pr-[21px]">
         <div className="hidden sticky top-0 pt-[14px] h-[calc(100vh-8px)] md:flex flex-col">
           <div className='h-[50%] mt-0'>
@@ -148,12 +164,12 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 const isOtherHovered = hoveredDistrict && hoveredDistrict !== district;
 
                 const className = `
-    text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
-    ${isSelected && !hoveredDistrict ? 'text-black font-bold active' : ''}
-    ${isHovered ? 'text-black font-bold' : ''}
-    ${isOtherHovered ? 'opacity-70' : ''}
-    ${!isSelected && !hoveredDistrict ? 'opacity-70 hover:text-black' : ''}
-  `;
+                  text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
+                  ${isSelected && !hoveredDistrict ? 'text-black font-bold active' : ''}
+                  ${isHovered ? 'text-black font-bold' : ''}
+                  ${isOtherHovered ? 'opacity-70' : ''}
+                  ${!isSelected && !hoveredDistrict ? 'opacity-70 hover:text-black' : ''}
+                `;
                 return (
                   <li key={district}>
                     <button
@@ -177,12 +193,12 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 const isOtherHovered = hoveredType && hoveredType !== value;
 
                 const className = `
-    text-link text-[1.6rem] w-full text-left px-2 text-cc mb-[20px] leading-[1.4]
-    ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
-    ${isHovered ? 'text-black font-bold' : ''}
-    ${isOtherHovered ? 'opacity-70' : ''}
-    ${!isSelected && !hoveredType ? 'opacity-70 hover:text-black' : ''}
-  `;
+                  text-link text-[1.6rem] w-full text-left px-2 text-cc mb-[20px] leading-[1.4]
+                  ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
+                  ${isHovered ? 'text-black font-bold' : ''}
+                  ${isOtherHovered ? 'opacity-70' : ''}
+                  ${!isSelected && !hoveredType ? 'opacity-70 hover:text-black' : ''}
+                `;
 
                 return (
                   <li key={value}>
@@ -197,14 +213,15 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   </li>
                 );
               })}
-
             </ul>
           </div>
         </div>
       </div>
 
+      {/* Right content area */}
       <div className="w-full lg:w-[80%] flex flex-col pt-[14px]">
-        <div className="flex mb-[12px] gap-[20px] ">
+        {/* Year/Month filters */}
+        <div className="flex mb-[12px] gap-[20px]">
           <div className="flex flex-wrap gap-[20px]">
             {years.map((year) => (
               <button
@@ -234,133 +251,160 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
           )}
         </div>
 
+        {/* Combined filters */}
         {selectedYear && localidadesUIDs.length > 0 && (
-          <div className="flex gap-[20px] max-w-full overflow-x-scroll whitespace-nowrap mb-[12px] items-center">
-            {combinedFilters.map(({ type, label }) => {
-              const slug = slugify(label);
-              const isAgente = type === 'agente';
-              const hasPage = isAgente
-                ? agentesUIDs.includes(slug)
-                : localidadesUIDs.includes(slug);
+          <CustomScrollbar direction="horizontal">
+            <div className="flex gap-[20px] whitespace-nowrap items-center select-none"
+              onMouseDown={() => document.body.style.cursor = 'grabbing'}
+              onMouseUp={() => document.body.style.cursor = ''}
+              onMouseLeave={() => document.body.style.cursor = ''}>
+              {combinedFilters.map(({ type, label }) => {
+                const slug = slugify(label);
+                const isAgente = type === 'agente';
+                const hasPage = isAgente
+                  ? agentesUIDs.includes(slug)
+                  : localidadesUIDs.includes(slug);
 
-              const isSelected =
-                !selectedCombinedFilter ||
-                (selectedCombinedFilter.label === label && selectedCombinedFilter.type === type);
+                const isSelected =
+                  !selectedCombinedFilter ||
+                  (selectedCombinedFilter.label === label && selectedCombinedFilter.type === type);
 
-              const isHovered =
-                hoveredCombinedFilter &&
-                hoveredCombinedFilter.label === label &&
-                hoveredCombinedFilter.type === type;
+                const isHovered =
+                  hoveredCombinedFilter &&
+                  hoveredCombinedFilter.label === label &&
+                  hoveredCombinedFilter.type === type;
 
-              const isOtherHovered =
-                hoveredCombinedFilter &&
-                (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
+                const isOtherHovered =
+                  hoveredCombinedFilter &&
+                  (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
 
-              const className = `
-    text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4]
-    ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
-    ${isHovered ? 'active' : ''}
-    ${isOtherHovered ? 'opacity-70' : ''}
-    ${!isSelected && !hoveredCombinedFilter ? 'text-link opacity-70 hover:text-black' : ''}
-  `;
+                const className = `
+                  text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4]
+                  ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
+                  ${isHovered ? 'active' : ''}
+                  ${isOtherHovered ? 'opacity-70' : ''}
+                  ${!isSelected && !hoveredCombinedFilter ? 'text-link opacity-70 hover:text-black' : ''}
+                `;
 
-              const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });
-              const handleMouseLeave = () => setHoveredCombinedFilter(null);
+                const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });
+                const handleMouseLeave = () => setHoveredCombinedFilter(null);
 
-              const handleClick = () => {
-                const next =
-                  selectedCombinedFilter?.label === label &&
-                    selectedCombinedFilter?.type === type
-                    ? null
-                    : { type, label };
+                const handleClick = () => {
+                  const next =
+                    selectedCombinedFilter?.label === label &&
+                      selectedCombinedFilter?.type === type
+                      ? null
+                      : { type, label };
 
-                setSelectedCombinedFilter(next);
+                  setSelectedCombinedFilter(next);
 
-                if (!isAgente && hasPage) {
-                  setActiveButton("Apoios");
-                  window.history.replaceState({}, '', `?localidade=${slug}`);
-                  setFiltro("");
-                } 
-                // else {
-                //   setFiltro(slug);
-                // }
-              };
+                  if (!isAgente && hasPage) {
+                    setActiveButton("Apoios");
+                    window.history.replaceState({}, '', `?localidade=${slug}`);
+                    setFiltro("");
+                  }
+                };
 
-              return (
-                <div key={`${type}-${label}`}>
-                  {isAgente && hasPage ? (
-                    <Link
-                      href={`/filtro/${slug}`}
-                      scroll={false}
-                      prefetch={true}
-                      className={className}
-                    >
-                      {label}
-                    </Link>
-
-    //                 <button className={className} onClick={() => {
-    // router.push(`/filtro/${slug}`, { shallow: true }); // ✅ use shallow
-    //                 }}>
-    //                   {label}
-    //                 </button>
-                  ) : (
-                    <button
-                      onClick={handleClick}
-                      onMouseEnter={handleMouseEnter}
-                      onMouseLeave={handleMouseLeave}
-                      className={className}
-                    >
-                      {label}
-                    </button>
-                  )}
-                </div>
-              );
-            })}
-
-          </div>
-        )}
-        <div>
-          <section
-            ref={scrollContainerRef}
-            className="h-[calc(100vh-102px)] overflow-y-auto scroll-container"
-          >
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
-              >
-                {filteredAgenda.length > 0 ? (
-                  <motion.div
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-                    className="space-y-4"
-                  >
-                    {[...filteredAgenda].reverse().map((event, index) => (
-                      <motion.div
-                        key={event.id ?? `event-${index}`}
-                        variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
-                        transition={{ duration: 0.125, ease: "easeOut" }}
+                return (
+                  <div key={`${type}-${label}`}>
+                    {isAgente && hasPage ? (
+                      <Link
+                        href={`/filtro/${slug}`}
+                        scroll={false}
+                        prefetch={true}
+                        className={className}
                       >
-                        <EventItem event={event} />
-                      </motion.div>
-                    ))}
-                  </motion.div>
-                ) : (
-                  <motion.p
-                    key="empty"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
+                        {label}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={handleClick}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
+                        className={className}
+                      >
+                        {label}
+                      </button>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </CustomScrollbar>
+        )}
+
+        {/* Main content with frosty effect */}
+        <div className="relative">
+          {/* Frosty overlay */}
+          <div
+            ref={frostyRef}
+            style={{
+              WebkitMaskImage: `
+      linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%),
+      linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)
+    `,
+              WebkitMaskComposite: 'intersect',
+              maskImage: `
+      linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%),
+      linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)
+    `,
+              maskComposite: 'intersect',
+              WebkitMaskSize: '100% 100%',
+              WebkitMaskRepeat: 'no-repeat'
+            }}s
+            className="absolute top-0 left-0 right-[7px] h-[6rem] z-10
+                      backdrop-blur-[1px] bg-white/30 pointer-events-none
+                      opacity-0 transition-opacity duration-300 will-change-opacity"
+          />
+
+
+
+          {isMounted && (
+            <CustomScrollbar direction="vertical">
+              <div
+                ref={scrollContainerRef}
+                className="h-[calc(100vh-102px)] mr-[7px] relative"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
+                    className="pr-[7px] pt-[7px]"
                   >
-                    Nenhum evento encontrado com os filtros selecionados.
-                  </motion.p>
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </section>
+                    {filteredAgenda.length > 0 ? (
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+                        className="space-y-4"
+                      >
+                        {[...filteredAgenda].reverse().map((event, index) => (
+                          <motion.div
+                            key={event.id ?? `event-${index}`}
+                            variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
+                            transition={{ duration: 0.125, ease: "easeOut" }}
+                          >
+                            <EventItem event={event} />
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    ) : (
+                      <motion.p
+                        key="empty"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
+                      >
+                        Nenhum evento encontrado com os filtros selecionados.
+                      </motion.p>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </CustomScrollbar>
+          )}
         </div>
       </div>
     </div>
@@ -411,11 +455,6 @@ function EventItem({ event }) {
               }}
             />
           )}
-          {/* {event.agente && (
-            <p className="text-[1.2rem] mt-auto">
-              {event.agente}
-            </p>
-          )} */}
         </div>
       </div>
     </div>
