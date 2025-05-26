@@ -13,58 +13,52 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
     setIsMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!isMounted || !scrollContainerRef.current) return;
+useEffect(() => {
+  if (!isMounted || !scrollContainerRef.current) return;
 
-    const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
-    const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]');
+  const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
+  const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]') as HTMLElement | null;
+  if (!nativeScrollContainer) return;
 
-    if (!nativeScrollContainer) return;
+  const lenis = new Lenis({
+    wrapper: nativeScrollContainer,
+    content: nativeScrollContainer.firstElementChild as HTMLElement,
+    smoothWheel: true,
+    duration: 1.2,
+    wheelMultiplier: 1.1,
+    touchMultiplier: 1.4,
+    infinite: false,
+  });
 
-    // Initialize Lenis
-    const lenis = new Lenis({
-      wrapper: nativeScrollContainer,
-      content: nativeScrollContainer.firstElementChild as HTMLElement,
-      smoothWheel: true,
-      duration: 1.2,
-      wheelMultiplier: 1.1,
-      touchMultiplier: 1.4,
-      infinite: false,
-    });
+  const handleScroll = () => {
+    if (!frostyRef.current || !nativeScrollContainer) return;
+    const scrollTop = nativeScrollContainer.scrollTop;
+    const opacity = Math.min(scrollTop / 30, 1);
+    frostyRef.current.style.opacity = `${opacity}`;
+    frostyRef.current.style.willChange = 'opacity';
+  };
 
-    // Track scroll position for frosty effect
-    const handleScroll = () => {
-      if (!frostyRef.current || !nativeScrollContainer) return;
+  // ✅ Named wrapper for Lenis scroll event
+  const onLenisScroll = () => handleScroll();
 
-      // Get scroll position from the native container
-      const scrollTop = nativeScrollContainer.scrollTop;
-      const opacity = Math.min(scrollTop / 30, 1);
+  nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+  lenis.on('scroll', onLenisScroll);
 
-      // Update frosty effect
-      frostyRef.current.style.opacity = `${opacity}`;
-      frostyRef.current.style.willChange = 'opacity';
-    };
+  lenisRef.current = lenis;
 
-    // Use both Lenis and native scroll listener for reliability
-    nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-    lenis.on('scroll', ({ scroll }) => {
-      handleScroll();
-    });
-
-    lenisRef.current = lenis;
-
-    const raf = (time: number) => {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    };
+  const raf = (time: number) => {
+    lenis.raf(time);
     requestAnimationFrame(raf);
+  };
+  requestAnimationFrame(raf);
 
-    return () => {
-      nativeScrollContainer.removeEventListener('scroll', handleScroll);
-      lenis.off('scroll');
-      lenis.destroy();
-    };
-  }, [isMounted]);
+  return () => {
+    nativeScrollContainer.removeEventListener('scroll', handleScroll);
+    lenis.off('scroll', onLenisScroll); // ✅ Now valid
+    lenis.destroy();
+  };
+}, [isMounted]);
+
 
   return (
     <div className="pt-[85px] relative">
