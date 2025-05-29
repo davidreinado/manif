@@ -4,9 +4,9 @@ import { FC, useEffect, useState } from "react";
 import { Content } from "@prismicio/client";
 import { SliceComponentProps } from "@prismicio/react";
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay } from 'swiper/modules';
 import Image from "next/image";
 import 'swiper/css';
-// import { ImagePixelated } from "react-pixelate"; // Correct named import
 
 /**
  * Props for `FullWidthImage`.
@@ -38,7 +38,14 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
       data-slice-variation={slice.variation}
       className="w-full"
     >
-      <Swiper spaceBetween={20} loop className="w-full">
+<Swiper
+  spaceBetween={14}
+  loop
+  speed={800} // 🔄 smoother transition (default is 300)
+  autoplay={{ delay: 4500, disableOnInteraction: false }}
+  modules={[Autoplay]}
+  className="w-full mb-[7px]"
+>
         {images.map((imgItem, index) => (
           <SwiperSlide key={index} className="w-full">
             {imgItem.imagem?.url && (
@@ -50,7 +57,7 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
                   alt={imgItem.imagem.alt || `Carrossel ${index + 1}`}
                 />
                 {imgItem.copyright && (
-                  <p className="text-xs mt-2 text-right">
+                  <p className="text-xs mt-2">
                     © {imgItem.copyright}
                   </p>
                 )}

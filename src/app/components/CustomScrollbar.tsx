@@ -15,7 +15,7 @@ const CustomScrollbar = forwardRef<OverlayScrollbarsComponentRef, {
   children: React.ReactNode;
   className?: string;
 }>(({ children, direction = 'vertical', className = '' }, ref) => {
-  const secondaryColor = useThemeStore((state) => state.secondaryColor);
+  // const secondaryColor = useThemeStore((state) => state.secondaryColor);
   const osRef = useRef<OverlayScrollbarsComponentRef>(null);
 
   useEffect(() => {
@@ -39,15 +39,15 @@ const CustomScrollbar = forwardRef<OverlayScrollbarsComponentRef, {
     const unsubscribe = instance.on('updated', updateScrollbarAppearance);
 
     return () => unsubscribe();
-  }, [secondaryColor]);
+  }, []);
 
   const scrollbarStyle: CustomCSSProperties = {
     height: '100%',
     width: '100%',
     cursor: direction === 'horizontal' ? 'grab' : 'auto',
-    '--os-handle-bg': secondaryColor,
-    '--os-handle-bg-hover': secondaryColor,
-    '--os-handle-bg-active': secondaryColor,
+    // '--os-handle-bg': secondaryColor,
+    // '--os-handle-bg-hover': secondaryColor,
+    // '--os-handle-bg-active': secondaryColor,
   };
 
   return (

@@ -10,7 +10,7 @@ export default function EventItem({ event }) {
               {event.data_inicial} {event.mes}
               {event.data_final && `-${event.data_final}`}
             </span>
-            <span className="font-ramboia text-[1.2rem]">{event.horas}</span>
+            <span className="font-ramboia text-[1.2rem] leading-[1.5]">{event.horas}</span>
           </div>
   
           {/* Title, Subtitle, Agente Column */}

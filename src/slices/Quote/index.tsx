@@ -15,7 +15,7 @@ const Quote: FC<QuoteProps> = ({ slice }) => {
     <section
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
-      className="my-[15px]"
+      className="mb-[7px]"
     >
       {slice.primary.quote_text && (
         <blockquote className="italic text-[2.1rem] leading-[1.333]">

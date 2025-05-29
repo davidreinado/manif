@@ -14,6 +14,7 @@ import slugify from "@sindresorhus/slugify";
 import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useFiltroStore } from "@/app/stores/useFiltroStore";
+import { useThemeStore } from "../stores/useThemeStore";
 
 type ArtistsResidencyAndCalendarProps = {
   home: any;
@@ -46,6 +47,9 @@ export default function ArtistsResidencyAndCalendar({
   const filtro = useFiltroStore((state) => state.filtro);
   const setFiltro = useFiltroStore((state) => state.setFiltro);
 
+  const setPrimaryColor = useThemeStore((state) => state.setPrimaryColor);
+  const setSecondaryColor = useThemeStore((state) => state.setSecondaryColor);
+
   const searchParams = useSearchParams();
   const [localidadeDoc, setLocalidadeDoc] = useState(null);
   const containerRef = useRef(null);
@@ -60,6 +64,12 @@ export default function ArtistsResidencyAndCalendar({
     } else {
       setFiltro(""); // clear if not on /filtro/[uid]
     }
+
+    if (pathname === '/') {
+      setPrimaryColor("#fffff");
+      setSecondaryColor("#808080")
+    }
+
   }, [pathname]);
 
   const { scrollYProgress } = useScroll({
@@ -67,7 +77,7 @@ export default function ArtistsResidencyAndCalendar({
     offset: ["start start", "end end"],
   });
 
-  const marginTop = useTransform(scrollYProgress, [0, 0.5], ["0px", "52px"]);
+  const marginTop = useTransform(scrollYProgress, [0, 0.5], ["0px", "62px"]);
   const fontSize = useTransform(scrollYProgress, [0, 1], [
     initialFontSize,
     "20px",
@@ -159,7 +169,7 @@ export default function ArtistsResidencyAndCalendar({
           <div className="w-full lg:w-1/2">
             {activeButton === "Sobre" && (
               <motion.div
-                className="text-[1.95rem] font-medium font-ramboia mt-[100px] md:mt-24 pr-[21px] sticky top-[60px]"
+                className="text-[1.95rem] font-medium font-ramboia mt-[88px] pr-[21px] sticky top-[60px]"
                 style={{
                   x: h2XPosition,
                   pointerEvents: isH2Visible ? "auto" : "none",

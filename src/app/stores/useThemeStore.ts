@@ -9,7 +9,7 @@ interface ThemeState {
 
 export const useThemeStore = create<ThemeState>((set) => ({
   primaryColor: "#fffff",
-  secondaryColor: "#dedede",
+  secondaryColor: "#808080",
 
   setPrimaryColor: (color) => {
     set({ primaryColor: color });

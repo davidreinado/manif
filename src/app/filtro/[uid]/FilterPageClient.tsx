@@ -26,14 +26,22 @@ export default function FilterPageClient() {
             if (doc?.data?.fundo == "Rosa") {
                 setPrimaryColor("#FC3370");
                 setSecondaryColor("#FAB617");
+                document.documentElement.style.setProperty('--primary-color', "#FC3370");
+                document.documentElement.style.setProperty('--secondary-color', "#FAB617");
             }
             else if (doc?.data?.fundo == "Laranja") {
                 setPrimaryColor("#FF5A16");
                 setSecondaryColor("#FAB617");
+                document.documentElement.style.setProperty('--primary-color', "#FF5A16");
+                document.documentElement.style.setProperty('--secondary-color', "#FAB617");
+
             }
             else if (doc?.data?.fundo == "Amarelo") {
                 setPrimaryColor("#FAB617");
                 setSecondaryColor("#FC3370");
+                document.documentElement.style.setProperty('--primary-color', "#FAB617");
+                document.documentElement.style.setProperty('--secondary-color', "#FC3370");
+
             }
         };
 
@@ -42,9 +50,9 @@ export default function FilterPageClient() {
 
     if (filtroDoc) {
         return (
-            <div className="mr-[7px] h-full">
+            <div className="h-full pr-[7px]">
                 <div>
-                    <h3 className="font-semibold text-[4rem] leading-[1.4] mb-[15px]">
+                    <h3 className="font-semibold text-[4rem] leading-[1.4] mb-[7px]">
                         {filtroDoc.data.titulo}
                     </h3>
                     <SliceZone slices={filtroDoc.data.slices} components={components} />

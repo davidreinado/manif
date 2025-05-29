@@ -2,10 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
+:root {
   --primary-color: #fff;
-  --secondary-color: #dedede;
-} */
+  --secondary-color: #808080;
+}
 
 @font-face {
     font-family: 'Correct Condensed';
@@ -134,13 +134,28 @@ html {
 
 body {
   background: var(--primary-color);
-  /* color: var(--secondary-color); */
+  transition: background 0.755s ease-in-out;
 }
 
-/* OverlayScrollbars custom styling */
+/* body,
+* {
+  cursor: url('/cursor.png'), auto;
+} */
+
+.scrollable {
+  cursor: auto;
+}
+
+.os-scrollbar-vertical .os-scrollbar-handle:before {
+    left: 0;
+    right: 0;
+}
 
 .os-scrollbar {
   background-color: var(--primary-color);
+  --os-handle-bg: var(--secondary-color) !important;
+  --os-handle-bg-hover: var(--secondary-color) !important;
+  --os-handle-bg-active: var(--secondary-color) !important;
 }
 
 .os-scrollbar-thumb {

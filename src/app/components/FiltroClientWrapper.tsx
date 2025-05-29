@@ -2,16 +2,25 @@
 import { useEffect, useState, useRef } from "react";
 import Lenis from '@studio-freight/lenis';
 import CustomScrollbar from '@/app/components/CustomScrollbar';
+import { useThemeStore } from "@/app/stores/useThemeStore"; // Make sure this import is present
+import { usePathname } from "next/navigation";
 
 export default function FiltroClientWrapper({ children }: { children: React.ReactNode }) {
   const [isMounted, setIsMounted] = useState(false);
+  const [backgroundColor, setBackgroundColor] = useState("#808080");
   const lenisRef = useRef<Lenis | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const frostyRef = useRef<HTMLDivElement>(null);
+  const primaryColor = useThemeStore((state) => state.primaryColor);
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
+  },[pathname, primaryColor])
 
   useEffect(() => {
     if (!isMounted || !scrollContainerRef.current) return;
@@ -61,12 +70,12 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
 
 
   return (
-    <div className="pt-[85px] relative">
+    <div className="pt-[94px] relative mr-[14px]">
       {/* Frosty overlay - now properly positioned */}
       <div
         ref={frostyRef}
         className="absolute top-0 left-0 right-0 h-[6rem] z-10
-                  backdrop-blur-[1px] bg-white/30 pointer-events-none
+                  backdrop-blur-[1px] pointer-events-none
                   opacity-0 transition-opacity duration-300"
         style={{
           top: '85px', // Adjust for your header
@@ -82,14 +91,15 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
     `,
           maskComposite: 'intersect',
           WebkitMaskSize: '100% 100%',
-          WebkitMaskRepeat: 'no-repeat'
+          WebkitMaskRepeat: 'no-repeat',
+          background: backgroundColor,
         }}
 
       />
 
       {isMounted && (
         <CustomScrollbar direction="vertical">
-          <div ref={scrollContainerRef} className="max-h-[calc(100vh-81px)] mr-[7px]">
+          <div ref={scrollContainerRef} className="max-h-[calc(100vh-86px)]">
             <div>{children}</div>
           </div>
         </CustomScrollbar>

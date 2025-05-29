@@ -17,14 +17,14 @@ const TwoColumnText: FC<TwoColumnTextProps> = ({ slice }) => {
       data-slice-type={slice.slice_type}
       data-slice-variation={slice.variation}
     >
-      <div className="flex text-[1.2rem] leading-[1.25] my-[15px] gap-[15px]">
+      <div className="flex text-[1.2rem] leading-[1.5] gap-[14px] mb-[7px]">
       {slice.primary.left_column_content && (
-        <blockquote className="">
+        <blockquote className="w-[50%]">
           <PrismicRichText field={slice.primary.left_column_content} />
         </blockquote>
       )}
             {slice.primary.right_column_content && (
-        <blockquote className="">
+        <blockquote className="w-[50%]">
           <PrismicRichText field={slice.primary.right_column_content} />
         </blockquote>
       )}

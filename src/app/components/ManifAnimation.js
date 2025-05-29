@@ -17,7 +17,7 @@ export default function FullWidthWord({ lenisScrollY }) {
     const updateFontSize = () => {
       const width = window.innerWidth;
       const baseWidth = 1280;
-      const baseFontSize = 467;
+      const baseFontSize = 465;
       const newFontSize = baseFontSize * (width / baseWidth);
       setFontSize(`${newFontSize}px`);
 

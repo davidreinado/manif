@@ -9,6 +9,8 @@ import { useFiltroStore } from '@/app/stores/useFiltroStore';
 import { useRouter } from 'next/navigation';
 import CustomScrollbar from '@/app/components/CustomScrollbar';
 import { useThemeStore } from "@/app/stores/useThemeStore"; // Make sure this import is present
+import { usePathname } from "next/navigation";
+import path from 'path';
 
 export default function Calendar({ home, selectedType, setSelectedType, agenda, localidades: localidadesPages = [], agentes: agentesPages = [], setActiveButton }) {
   // State declarations
@@ -29,16 +31,19 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   };
 
   const router = useRouter();
+  const pathname = usePathname();
   const lenisRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const frostyRef = useRef(null);
   const [hoveredDistrict, setHoveredDistrict] = useState(null);
+  const [hoveredMonths, setHoveredMonths] = useState(null);
   const [hoveredType, setHoveredType] = useState(null);
   const [hoveredCombinedFilter, setHoveredCombinedFilter] = useState(null);
 
   const secondaryColor = useThemeStore((state) => state.secondaryColor);
-  const setSecondaryColor = useThemeStore((state) => state.setSecondaryColor);
+  const primaryColor = useThemeStore((state) => state.primaryColor);
 
+  const [backgroundColor, setBackgroundColor] = useState("#808080");
 
   // Filtered data calculations
   const filteredLocalidades = [...new Set(
@@ -93,6 +98,10 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
       }
     };
   }, []);
+
+  useEffect(() => {
+    primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
+  }, [pathname, primaryColor])
 
   useEffect(() => {
     if (!isMounted || !scrollContainerRef.current) return;
@@ -157,9 +166,9 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
 
   // Render
   return (
-    <div className="w-full py-[14px] pl-0 md:pl-[21px] flex flex-col lg:flex-row">
+    <div className="w-full py-[14px] pl-0 md:pl-[21px] flex flex-col lg:flex-row justify-between">
       {/* Left sidebar */}
-      <div className="w-full lg:w-[20%] mb-4 lg:mb-0 lg:pr-[21px]">
+      <div className="w-full lg:w-[20%] mb-4 lg:mb-0">
         <div className="hidden sticky top-0 pt-[14px] h-[calc(100vh-8px)] md:flex flex-col">
           <div className='h-[50%] mt-0'>
             <ul>
@@ -169,19 +178,39 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 const isOtherHovered = hoveredDistrict && hoveredDistrict !== district;
 
                 const className = `
-                  text-link text-[1.6rem] w-full text-left px-2 py-1 text-cc
+                  text-link text-[1.6rem] w-full text-left py-1 text-cc
                   ${isSelected && !hoveredDistrict ? 'text-black font-bold active' : ''}
                   ${isHovered ? 'text-black font-bold' : ''}
-                  ${isOtherHovered ? 'opacity-70' : ''}
-                  ${!isSelected && !hoveredDistrict ? 'opacity-70 hover:text-black' : ''}
+                  ${!isSelected && !hoveredDistrict ? 'hover:text-black' : ''}
                 `;
+
+                const handleClick = (district) => {
+
+                  setActiveButton("Sobre");
+                  if (pathname !== "/") {
+                    router.push('/', { scroll: false }); // Go to home
+                    setTimeout(() => {
+                      // window.history.replaceState({}, '', `/?localidade=${slug}`);
+                      setFiltro("")
+                    }, 50); // Wait a short time to ensure route change
+
+                  }
+
+
+                  toggleType(null)
+                  toggleDistrict(district)
+                };
+
+
                 return (
                   <li key={district}>
                     <button
-                      onClick={() => toggleDistrict(district)}
+                      onClick={() => handleClick(district)}
                       onMouseEnter={() => setHoveredDistrict(district)}
                       onMouseLeave={() => setHoveredDistrict(null)}
                       className={className}
+                      style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredType ? { color: secondaryColor } : {}}
+
                     >
                       {district}
                     </button>
@@ -198,11 +227,10 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 const isOtherHovered = hoveredType && hoveredType !== value;
 
                 const className = `
-                  text-link text-[1.6rem] w-full text-left px-2 text-cc mb-[20px] leading-[1.4]
+                  text-link text-[1.6rem] w-full text-left text-cc mb-[20px] leading-[1.4]
                   ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
                   ${isHovered ? 'text-black font-bold' : ''}
-                  ${isOtherHovered ? 'opacity-70' : ''}
-                  ${!isSelected && !hoveredType ? 'opacity-70 hover:text-black' : ''}
+                  ${!isSelected && !hoveredType ? 'hover:text-black' : ''}
                 `;
 
                 return (
@@ -212,6 +240,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                       onMouseEnter={() => setHoveredType(value)}
                       onMouseLeave={() => setHoveredType(null)}
                       className={className}
+                      style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredType ? { color: secondaryColor } : {}}
+
                     >
                       {label}
                     </button>
@@ -224,9 +254,9 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
       </div>
 
       {/* Right content area */}
-      <div className="w-full lg:w-[80%] flex flex-col pt-[14px]">
+      <div className="w-full lg:w-[80%] flex flex-col pt-[20px]">
         {/* Year/Month filters */}
-        <div className="flex mb-[12px] gap-[20px]">
+        <div className="flex mb-[12px] gap-[20px] leading-none">
           <div className="flex flex-wrap gap-[20px]">
             {years.map((year) => (
               <button
@@ -235,23 +265,38 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   setSelectedYear(year);
                   setSelectedMonth(null);
                 }}
-                className={`font-cc text-[1.8rem] uppercase ${selectedYear === year ? 'text-black' : 'opacity-70 hover:text-black'}`}
-              >
+                className={`font-cc text-[1.8rem] uppercase ${selectedYear === year ? 'text-black' : 'hover:text-black'}`}
+                style={selectedYear !== year ? { color: secondaryColor } : {}}              >
                 {year}
               </button>
             ))}
           </div>
           {selectedYear && (
             <div className="flex flex-wrap gap-[20px]">
-              {months.map((month) => (
-                <button
-                  key={month}
-                  onClick={() => toggleMonth(month)}
-                  className={`text-[1.8rem] font-cc uppercase ${selectedMonth === month ? 'opacity-70 font-bold active' : 'text-black hover:opacity-70'}`}
-                >
-                  {month}
-                </button>
-              ))}
+              {months.map((month) => {
+                const isSelected = selectedMonth === null || selectedMonth === month;
+                const isHovered = hoveredMonths === month;
+                const isOtherHovered = hoveredMonths && hoveredMonths !== month;
+                const className = `font-cc text-[1.8rem] uppercase transition-all duration-225 ease-in-out                 
+                  ${isSelected && !hoveredMonths ? 'text-black font-bold active' : ''}
+                  ${isHovered ? 'text-black font-bold' : ''}
+                  ${!isSelected && !hoveredMonths ? 'hover:text-black' : ''}
+                `;
+                return (
+                  <button
+                    key={month}
+                    onClick={() => toggleMonth(month)}
+                    onMouseEnter={() => setHoveredMonths(month)}
+                    onMouseLeave={() => setHoveredMonths(null)}
+                    className={className}
+                    style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredMonths
+                      ? { color: secondaryColor } : {}}
+
+                  >
+                    {month}
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>
@@ -259,7 +304,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
         {/* Combined filters */}
         {selectedYear && localidadesUIDs.length > 0 && (
           <CustomScrollbar direction="horizontal">
-            <div className="flex gap-[20px] whitespace-nowrap items-center select-none"
+            <div className="flex gap-[20px] whitespace-nowrap items-center select-none scrollable"
               onMouseDown={() => document.body.style.cursor = 'grabbing'}
               onMouseUp={() => document.body.style.cursor = ''}
               onMouseLeave={() => document.body.style.cursor = ''}>
@@ -284,11 +329,10 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
 
                 const className = `
-                  text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4]
+                  text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4] cursor-pointer
                   ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
                   ${isHovered ? 'active' : ''}
-                  ${isOtherHovered ? 'opacity-70' : ''}
-                  ${!isSelected && !hoveredCombinedFilter ? 'text-link opacity-70 hover:text-black' : ''}
+                  ${!isSelected && !hoveredCombinedFilter ? 'text-link hover:text-black' : ''}
                 `;
 
                 const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });
@@ -305,8 +349,11 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
 
                   if (!isAgente && hasPage) {
                     setActiveButton("Apoios");
-                    window.history.replaceState({}, '', `?localidade=${slug}`);
-                    setFiltro("");
+                    router.push('/', { scroll: false }); // Go to home
+                    setTimeout(() => {
+                      window.history.replaceState({}, '', `/?localidade=${slug}`);
+                      setFiltro("");
+                    }, 50); // Wait a short time to ensure route change
                   }
                 };
 
@@ -315,9 +362,12 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                     {isAgente && hasPage ? (
                       <Link
                         href={`/filtro/${slug}`}
+                        onMouseEnter={handleMouseEnter}
+                        onMouseLeave={handleMouseLeave}
                         scroll={false}
                         prefetch={true}
                         className={className}
+                        style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
                       >
                         {label}
                       </Link>
@@ -327,6 +377,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                         className={className}
+                        style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
                       >
                         {label}
                       </button>
@@ -355,10 +406,11 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     `,
               maskComposite: 'intersect',
               WebkitMaskSize: '100% 100%',
-              WebkitMaskRepeat: 'no-repeat'
+              WebkitMaskRepeat: 'no-repeat',
+              background: backgroundColor
             }}
             className="absolute top-0 left-0 right-[7px] h-[6rem] z-10
-                      backdrop-blur-[1px] bg-red/30 pointer-events-none
+                      backdrop-blur-[1px] pointer-events-none
                       opacity-0 transition-opacity duration-300 will-change-opacity"
           />
 
@@ -366,7 +418,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
             <CustomScrollbar direction="vertical">
               <div
                 ref={scrollContainerRef}
-                className="h-[calc(100vh-102px)] mr-[7px] relative"
+                className="h-[calc(100vh-102px)] relative"
               >
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -416,14 +468,14 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
 
 function EventItem({ event, secondaryColor }) {
   return (
-    <div className="border-b pb-4 mb-4" style={{ borderColor: secondaryColor  }} >
+    <div className="border-b pb-4 mb-4" style={{ borderColor: secondaryColor }} >
       <div className="flex flex-wrap md:flex-nowrap gap-x-[14px] gap-y-[0px]">
         <div className="w-1/2 md:w-[20%] order-1 md:order-1 flex flex-col">
           <span className="font-cc font-bold text-[1.8rem] lowercase">
             {event.data_inicial} {event.mes}
             {event.data_final && `-${event.data_final}`}
           </span>
-          <span className="font-ramboia text-[1.2rem]">{event.horas}</span>
+          <span className="font-ramboia text-[1.2rem] leading-[1.5]">{event.horas}</span>
         </div>
 
         <div className="w-1/2 md:w-[20%] order-2 md:order-3 flex flex-col justify-between">
@@ -432,7 +484,7 @@ function EventItem({ event, secondaryColor }) {
               field={event.local}
               components={{
                 paragraph: ({ children }) => (
-                  <p className="text-[1.2rem] font-ramboia">{children}</p>
+                  <p className="text-[1.2rem] font-ramboia leading-[1.25]">{children}</p>
                 ),
               }}
             />
@@ -444,7 +496,7 @@ function EventItem({ event, secondaryColor }) {
             field={event.titulo}
             components={{
               paragraph: ({ children }) => (
-                <h3 className="font-medium text-[1.8rem] py-[4px] leading-[1.1] mb-2">{children}</h3>
+                <h3 className="font-medium text-[2.1rem] leading-[1.125] mb-2">{children}</h3>
               ),
             }}
           />
@@ -453,7 +505,7 @@ function EventItem({ event, secondaryColor }) {
               field={event.subtitulo}
               components={{
                 paragraph: ({ children }) => (
-                  <p className="text-[1.2rem] font-ramboia mb-2">{children}</p>
+                  <p className="text-[1.2rem] font-ramboia leading-[1.5]">{children}</p>
                 ),
               }}
             />
