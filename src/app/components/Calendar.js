@@ -25,7 +25,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const [selectedCombinedFilter, setSelectedCombinedFilter] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
   const typeOptions = {
-    "Residências": "Artistas \n Residentes",
+    "Residências": <>Artistas<br />Residentes</>,
     "Obras": "Exposições",
     "Mediação": "Mediação"
   };
