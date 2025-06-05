@@ -92,6 +92,21 @@ export type FiltroDocument<Lang extends string = string> =
   prismic.PrismicDocumentWithUID<Simplify<FiltroDocumentData>, "filtro", Lang>;
 
 /**
+ * Item in *Local → Logo*
+ */
+export interface LocalDocumentDataLogoItem {
+  /**
+   * Imagem field in *Local → Logo*
+   *
+   * - **Field Type**: Image
+   * - **Placeholder**: *None*
+   * - **API ID Path**: local.logo[].imagem
+   * - **Documentation**: https://prismic.io/docs/field#image
+   */
+  imagem: prismic.ImageField<never>;
+}
+
+/**
  * Content for Local documents
  */
 interface LocalDocumentData {
@@ -107,114 +122,15 @@ interface LocalDocumentData {
   titulo: prismic.KeyTextField;
 
   /**
-   * Imagem 1 field in *Local*
+   * Logo field in *Local*
    *
-   * - **Field Type**: Image
+   * - **Field Type**: Group
    * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_1
+   * - **API ID Path**: local.logo[]
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
+   * - **Documentation**: https://prismic.io/docs/field#group
    */
-  imagem_1: prismic.ImageField<never>;
-
-  /**
-   * Imagem 2 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_2
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_2: prismic.ImageField<never>;
-
-  /**
-   * Imagem 3 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_3
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_3: prismic.ImageField<never>;
-
-  /**
-   * Imagem 4 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_4
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_4: prismic.ImageField<never>;
-
-  /**
-   * Imagem 5 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_5
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_5: prismic.ImageField<never>;
-
-  /**
-   * Imagem 6 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_6
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_6: prismic.ImageField<never>;
-
-  /**
-   * Imagem 7 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_7
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_7: prismic.ImageField<never>;
-
-  /**
-   * Imagem 8 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_8
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_8: prismic.ImageField<never>;
-
-  /**
-   * Imagem 9 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_9
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_9: prismic.ImageField<never>;
-
-  /**
-   * Imagem 10 field in *Local*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: local.imagem_10
-   * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_10: prismic.ImageField<never>;
+  logo: prismic.GroupField<Simplify<LocalDocumentDataLogoItem>>;
 }
 
 /**
@@ -909,6 +825,7 @@ declare module "@prismicio/client" {
       FiltroDocumentDataSlicesSlice,
       LocalDocument,
       LocalDocumentData,
+      LocalDocumentDataLogoItem,
       PageDocument,
       PageDocumentData,
       PageDocumentDataAgendaItem,

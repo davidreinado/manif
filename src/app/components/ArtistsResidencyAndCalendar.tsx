@@ -15,6 +15,8 @@ import { usePathname, useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { useFiltroStore } from "@/app/stores/useFiltroStore";
 import { useThemeStore } from "../stores/useThemeStore";
+import Lenis from '@studio-freight/lenis';
+import CustomScrollbar from '@/app/components/CustomScrollbar';
 
 type ArtistsResidencyAndCalendarProps = {
   home: any;
@@ -55,6 +57,17 @@ export default function ArtistsResidencyAndCalendar({
   const containerRef = useRef(null);
   const textRef = useRef(null);
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const frostyRef = useRef<HTMLDivElement>(null);
+  const lenisRef = useRef<Lenis | null>(null);
+  const [backgroundColor, setBackgroundColor] = useState("#808080");
+  const primaryColor = useThemeStore((state) => state.primaryColor);
+  const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+    primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
+  },[pathname, primaryColor])
+
   // Sync filtro Zustand state with the URL param "localidade"
   useEffect(() => {
     const match = pathname.match(/^\/filtro\/([^/]+)/);
@@ -71,6 +84,57 @@ export default function ArtistsResidencyAndCalendar({
     }
 
   }, [pathname]);
+
+  useEffect(() => {
+    if(activeButton === "Apoios" && localidadeDoc)
+    setIsMounted(true);
+  }, [activeButton, localidadeDoc]);
+
+  useEffect(() => {
+    if (!isMounted || !scrollContainerRef.current) return;
+
+    const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
+    const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]') as HTMLElement | null;
+    if (!nativeScrollContainer) return;
+
+    const lenis = new Lenis({
+      wrapper: nativeScrollContainer,
+      content: nativeScrollContainer.firstElementChild as HTMLElement,
+      smoothWheel: true,
+      duration: 1.2,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.4,
+      infinite: false,
+    });
+
+    const handleScroll = () => {
+      if (!frostyRef.current || !nativeScrollContainer) return;
+      const scrollTop = nativeScrollContainer.scrollTop;
+      const opacity = Math.min(scrollTop / 30, 1);
+      frostyRef.current.style.opacity = `${opacity}`;
+      frostyRef.current.style.willChange = 'opacity';
+    };
+
+    // ✅ Named wrapper for Lenis scroll event
+    const onLenisScroll = () => handleScroll();
+
+    nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    lenis.on('scroll', onLenisScroll);
+
+    lenisRef.current = lenis;
+
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+
+    return () => {
+      nativeScrollContainer.removeEventListener('scroll', handleScroll);
+      lenis.off('scroll', onLenisScroll); // ✅ Now valid
+      lenis.destroy();
+    };
+  }, [isMounted]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -192,31 +256,62 @@ export default function ArtistsResidencyAndCalendar({
                 <AnimatePresence>
                   <motion.div
                     initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 15 }}
+                    exit={{ opacity: 0, y: 15 }}
                     transition={{ duration: 0.125 }}
                     className="mb-8"
                   >
-                    <div className="flex flex-wrap gap-4">
-                      {Array.from({ length: 10 }).map((_, index) => {
-                        const key = `imagem_${index + 1}`;
-                        const image = localidadeDoc.data[key];
+                    <div
+                      ref={frostyRef}
+                      className="absolute top-0 left-0 right-0 h-[6rem] z-10
+                  backdrop-blur-[1px] pointer-events-none
+                  opacity-0 transition-opacity duration-300"
+                      style={{
+                        top: '85px', // Adjust for your header
+                        width: 'calc(100% - 12px)', // Adjust for scrollbar
+                        WebkitMaskImage: `
+      linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%),
+      linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)
+    `,
+                        WebkitMaskComposite: 'intersect',
+                        maskImage: `
+      linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%),
+      linear-gradient(to right, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 20%, rgba(0,0,0,1) 80%, rgba(0,0,0,0) 100%)
+    `,
+                        maskComposite: 'intersect',
+                        WebkitMaskSize: '100% 100%',
+                        WebkitMaskRepeat: 'no-repeat',
+                        background: backgroundColor,
+                      }}
 
-                        return (
-                          image?.url && (
-                            <Image
-                              key={key}
-                              src={image.url}
-                              alt={image.alt || `Imagem ${index + 1}`}
-                              width={100}
-                              height={80}
-                              className="my-4 grayscale"
-                              style={{ height: "80px", width: "auto" }}
-                            />
-                          )
-                        );
-                      })}
+                    />
+                    <CustomScrollbar direction="vertical">
+                    <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
+                      <div className="flex flex-wrap gap-[28px]">
+                        {localidadeDoc.data.logo?.map((item, index) => {
+                          const image = item.imagem;
+
+                          return (
+                            image?.url && (
+                              <div
+                                key={`logo_image_${index}`}
+                                className="w-[19%] flex justify-center items-center"
+                              >
+                                <Image
+                                  src={image.url}
+                                  alt={image.alt || `Imagem ${index + 1}`}
+                                  width={0}
+                                  height={0}
+                                  sizes="(max-width: 768px) 100vw, 20vw"
+                                  className="w-full h-auto object-contain max-h-24"
+                                />
+                              </div>
+                            )
+                          );
+                        })}
+                      </div>
                     </div>
+                    </CustomScrollbar>
                   </motion.div>
                 </AnimatePresence>
               </motion.div>
