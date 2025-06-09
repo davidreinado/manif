@@ -24,7 +24,7 @@
         "config": {
           "label": "Fundo",
           "placeholder": "",
-          "options": ["Laranja", "Amarelo", "Rosa"]
+          "options": ["Laranja", "Amarelo", "Rosa", "Branco"]
         }
       },
       "slices": {

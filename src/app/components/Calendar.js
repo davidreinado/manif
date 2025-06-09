@@ -18,15 +18,15 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const years = [...new Set(home.data.agenda.map(item => item.ano))];
   const months = [...new Set(home.data.agenda.map(item => item.mes))];
   const setFiltro = useFiltroStore((state) => state.setFiltro);
-  const [selectedYear, setSelectedYear] = useState(years[0]);
+  const [selectedYear, setSelectedYear] = useState(null);
   const [selectedMonth, setSelectedMonth] = useState(null);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
   const [clickedType, setClickedType] = useState(null);
   const [selectedCombinedFilter, setSelectedCombinedFilter] = useState(null);
   const [isMounted, setIsMounted] = useState(false);
   const typeOptions = {
-    "Residências": <>Artistas<br />Residentes</>,
-    "Obras": "Exposições",
+    "Residência": <>Artistas<br />Residentes</>,
+    "Exposição": "Exposições",
     "Mediação": "Mediação"
   };
 
@@ -39,23 +39,37 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const [hoveredMonths, setHoveredMonths] = useState(null);
   const [hoveredType, setHoveredType] = useState(null);
   const [hoveredCombinedFilter, setHoveredCombinedFilter] = useState(null);
+  const [hoveredYear, setHoveredYear] = useState(null);
 
   const secondaryColor = useThemeStore((state) => state.secondaryColor);
   const primaryColor = useThemeStore((state) => state.primaryColor);
 
   const [backgroundColor, setBackgroundColor] = useState("#808080");
 
+  const itemMatchesType = (item, selectedType) => {
+  if (!selectedType) return true;
+
+  const typeMap = {
+    "Residência": item.residencia,
+    "Exposição": item.exposicao,
+    "Mediação": item.mediacao
+  };
+
+  return Boolean(typeMap[selectedType]);
+};
+
+
   // Filtered data calculations
   const filteredLocalidades = [...new Set(
     home.data.agenda
-      .filter(item => selectedType ? item.tipo === selectedType : true)
+      .filter(item => itemMatchesType(item, selectedType))
       .map(item => item.localidade)
       .filter(Boolean)
   )].sort((a, b) => a.localeCompare(b));
 
   const filteredAgentes = [...new Set(
     home.data.agenda
-      .filter(item => selectedType ? item.tipo === selectedType : true)
+      .filter(item => itemMatchesType(item, selectedType))
       .map(item => item.agente)
       .filter(Boolean)
   )].sort((a, b) => a.localeCompare(b));
@@ -72,21 +86,36 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
       ...allLocalidades.map(loc => ({ type: 'localidade', label: loc })),
     ];
 
-  const filteredAgenda = useMemo(() => {
-    return home.data.agenda.filter((item) => {
-      return (
-        (selectedYear ? item.ano === selectedYear : true) &&
-        (selectedMonth ? item.mes === selectedMonth : true) &&
-        (selectedDistrict ? item.distrito === selectedDistrict : true) &&
-        (selectedType ? item.tipo === selectedType : true) &&
-        (selectedCombinedFilter
-          ? selectedCombinedFilter.type === 'agente'
-            ? item.agente === selectedCombinedFilter.label
-            : item.localidade === selectedCombinedFilter.label
-          : true)
-      );
-    });
-  }, [home.data.agenda, selectedYear, selectedMonth, selectedDistrict, selectedType, selectedCombinedFilter]);
+const filteredAgenda = useMemo(() => {
+  if (!home?.data?.agenda) return [];
+
+  // Função que verifica se o item tem o tipo selecionado em algum dos campos
+  const itemMatchesType = (item, selectedType) => {
+    if (!selectedType) return true; // se não há filtro por tipo, aceita tudo
+
+    const typeMap = {
+      "Residência": item.residencia,
+      "Exposição": item.exposicao,
+      "Mediação": item.mediacao,
+    };
+
+    return Boolean(typeMap[selectedType]);
+  };
+
+  return home.data.agenda.filter(item => {
+    return (
+      (selectedYear ? item.ano === selectedYear : true) &&
+      (selectedMonth ? item.mes === selectedMonth : true) &&
+      (selectedDistrict ? item.distrito === selectedDistrict : true) &&
+      itemMatchesType(item, selectedType) &&
+      (selectedCombinedFilter
+        ? selectedCombinedFilter.type === 'agente'
+          ? item.agente === selectedCombinedFilter.label
+          : item.localidade === selectedCombinedFilter.label
+        : true)
+    );
+  });
+}, [home, selectedYear, selectedMonth, selectedDistrict, selectedType, selectedCombinedFilter]);
 
   // Lenis initialization with optimized frosty effect
   useEffect(() => {
@@ -158,6 +187,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
     setClickedType(newType);
     setSelectedType(newType);
     setSelectedCombinedFilter(null);
+    router.push('/', { scroll: false }); // Go to home
   };
 
   const toggleMonth = (month) => {
@@ -195,7 +225,6 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                     }, 50); // Wait a short time to ensure route change
 
                   }
-
 
                   toggleType(null)
                   toggleDistrict(district)
@@ -255,54 +284,77 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
 
       {/* Right content area */}
       <div className="w-full lg:w-[80%] flex flex-col pt-[20px]">
-        {/* Year/Month filters */}
-        <div className="flex mb-[12px] gap-[20px] leading-none">
-          <div className="flex flex-wrap gap-[20px]">
-            {years.map((year) => (
+
+        <div className="flex flex-wrap items-center gap-x-[20px] gap-y-[7px] leading-none mb-[14px]">
+          {/* Botões de ano */}
+          {years.map((year) => {
+            const isSelected = selectedYear === null || selectedYear === year;
+            const isHovered = hoveredYear === year;
+            const isOtherHovered = hoveredYear && hoveredYear !== year;
+            const className = `font-cc text-[1.8rem] uppercase transition-all duration-225 ease-in-out                 
+        ${isSelected && !hoveredYear ? 'text-black font-bold active' : ''}
+        ${isHovered ? 'text-black font-bold' : ''}
+        ${!isSelected && !hoveredYear ? 'hover:text-black' : ''}
+      `;
+
+            return (
               <button
                 key={year}
                 onClick={() => {
                   setSelectedYear(year);
                   setSelectedMonth(null);
                 }}
-                className={`font-cc text-[1.8rem] uppercase ${selectedYear === year ? 'text-black' : 'hover:text-black'}`}
-                style={selectedYear !== year ? { color: secondaryColor } : {}}              >
+                onMouseEnter={() => setHoveredYear(year)}
+                onMouseLeave={() => setHoveredYear(null)}
+                className={className}
+                style={
+                  isOtherHovered
+                    ? { color: secondaryColor }
+                    : !isSelected && !hoveredYear
+                      ? { color: secondaryColor }
+                      : {}
+                }
+              >
                 {year}
               </button>
-            ))}
-          </div>
-          {selectedYear && (
-            <div className="flex flex-wrap gap-[20px]">
-              {months.map((month) => {
-                const isSelected = selectedMonth === null || selectedMonth === month;
-                const isHovered = hoveredMonths === month;
-                const isOtherHovered = hoveredMonths && hoveredMonths !== month;
-                const className = `font-cc text-[1.8rem] uppercase transition-all duration-225 ease-in-out                 
-                  ${isSelected && !hoveredMonths ? 'text-black font-bold active' : ''}
-                  ${isHovered ? 'text-black font-bold' : ''}
-                  ${!isSelected && !hoveredMonths ? 'hover:text-black' : ''}
-                `;
-                return (
-                  <button
-                    key={month}
-                    onClick={() => toggleMonth(month)}
-                    onMouseEnter={() => setHoveredMonths(month)}
-                    onMouseLeave={() => setHoveredMonths(null)}
-                    className={className}
-                    style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredMonths
-                      ? { color: secondaryColor } : {}}
+            );
+          })}
 
-                  >
-                    {month}
-                  </button>
-                )
-              })}
-            </div>
-          )}
+
+          {/* Botões de mês (aparecem só se o ano estiver selecionado) */}
+          {months.map((month) => {
+              const isSelected = selectedMonth === null || selectedMonth === month;
+              const isHovered = hoveredMonths === month;
+              const isOtherHovered = hoveredMonths && hoveredMonths !== month;
+              const className = `font-cc text-[1.8rem] uppercase transition-all duration-225 ease-in-out                 
+        ${isSelected && !hoveredMonths ? 'text-black font-bold active' : ''}
+        ${isHovered ? 'text-black font-bold' : ''}
+        ${!isSelected && !hoveredMonths ? 'hover:text-black' : ''}
+      `;
+              return (
+                <button
+                  key={month}
+                  onClick={() => toggleMonth(month)}
+                  onMouseEnter={() => setHoveredMonths(month)}
+                  onMouseLeave={() => setHoveredMonths(null)}
+                  className={className}
+                  style={
+                    isOtherHovered
+                      ? { color: secondaryColor }
+                      : !isSelected && !hoveredMonths
+                        ? { color: secondaryColor }
+                        : {}
+                  }
+                >
+                  {month}
+                </button>
+              );
+            })}
         </div>
 
+
         {/* Combined filters */}
-        {selectedYear && localidadesUIDs.length > 0 && (
+        { localidadesUIDs.length > 0 && (
           <CustomScrollbar direction="horizontal">
             <div className="flex gap-[20px] whitespace-nowrap items-center select-none scrollable"
               onMouseDown={() => document.body.style.cursor = 'grabbing'}
@@ -346,10 +398,10 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                       : { type, label };
 
                   setSelectedCombinedFilter(next);
+                  router.push('/', { scroll: false }); // Go to home
 
                   if (!isAgente && hasPage) {
                     setActiveButton("Apoios");
-                    router.push('/', { scroll: false }); // Go to home
                     setTimeout(() => {
                       window.history.replaceState({}, '', `/?localidade=${slug}`);
                       setFiltro("");
@@ -357,11 +409,12 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                   }
                 };
 
-                return (
+               return (
                   <div key={`${type}-${label}`}>
-                    {isAgente && hasPage ? (
+                    {isAgente && hasPage && pathname !== `/filtro/${slug}` ? (
                       <Link
                         href={`/filtro/${slug}`}
+                        onClick={handleClick}
                         onMouseEnter={handleMouseEnter}
                         onMouseLeave={handleMouseLeave}
                         scroll={false}
@@ -418,7 +471,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
             <CustomScrollbar direction="vertical">
               <div
                 ref={scrollContainerRef}
-                className="h-[calc(100vh-102px)] relative"
+                className="h-[calc(100vh-109px)] pt-[14px] relative"
               >
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -470,10 +523,12 @@ function EventItem({ event, secondaryColor }) {
   return (
     <div className="border-b pb-4 mb-4" style={{ borderColor: secondaryColor }} >
       <div className="flex flex-wrap md:flex-nowrap gap-x-[14px] gap-y-[0px]">
-        <div className="w-1/2 md:w-[20%] order-1 md:order-1 flex flex-col">
+        <div className="w-1/2 md:w-[20%] flex flex-col">
           <span className="font-cc font-bold text-[1.8rem] lowercase">
-            {event.data_inicial} {event.mes}
-            {event.data_final && `-${event.data_final}`}
+            {(!event.mes_fim || event.mes_fim === event.mes)
+              ? `${event.data_inicial}${event.data_final ? `-${event.data_final}` : ''} ${event.mes}`
+              : `${event.data_inicial} ${event.mes}${event.data_final ? `-${event.data_final}` : ''}${event.mes_fim ? ` ${event.mes_fim}` : ''}`
+            }
           </span>
           <span className="font-ramboia text-[1.2rem] leading-[1.5]">{event.horas}</span>
         </div>

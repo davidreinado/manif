@@ -212,6 +212,16 @@ body {
   height: 4px !important;
 }
 
+/* .os-scrollbar {
+  height: 14px !important;
+  width: 14px !important;
+} */
+
+.scrollHeight {
+  height: 38px !important;
+}
+
+
 .os-scrollbar-horizontal .os-scrollbar-track {
   height: 100% !important;
 }

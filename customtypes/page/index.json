@@ -49,7 +49,7 @@
               "config": {
                 "label": "Ano",
                 "placeholder": "",
-                "options": ["2025", "2026", "2027", "2029", "2030"]
+                "options": ["2025", "2026", "2027", "2024"]
               }
             },
             "mes": {
@@ -58,18 +58,39 @@
                 "label": "Mês",
                 "placeholder": "",
                 "options": [
-                  "Janeiro",
-                  "Feveiro",
-                  "Março",
-                  "Abril",
-                  "Maio",
-                  "Junho",
-                  "Julho",
-                  "Agosto",
-                  "Setembro",
-                  "Otubro",
-                  "Novembro",
-                  "Dezembro"
+                  "jan",
+                  "fev",
+                  "mar",
+                  "abr",
+                  "mai",
+                  "jun",
+                  "jul",
+                  "ago",
+                  "set",
+                  "out",
+                  "nov",
+                  "dez"
+                ]
+              }
+            },
+            "mes_fim": {
+              "type": "Select",
+              "config": {
+                "label": "Mês Fim",
+                "placeholder": "",
+                "options": [
+                  "jan",
+                  "fev",
+                  "mar",
+                  "abr",
+                  "mai",
+                  "jun",
+                  "jul",
+                  "ago",
+                  "set",
+                  "out",
+                  "nov",
+                  "dez"
                 ]
               }
             },
@@ -174,12 +195,31 @@
                 "placeholder": ""
               }
             },
-            "tipo": {
-              "type": "Select",
+            "residencia": {
+              "type": "Boolean",
               "config": {
-                "label": "Tipo",
-                "placeholder": "",
-                "options": ["Residências", "Obras", "Mediação"]
+                "label": "Residência",
+                "placeholder_false": "false",
+                "placeholder_true": "true",
+                "default_value": false
+              }
+            },
+            "exposicao": {
+              "type": "Boolean",
+              "config": {
+                "label": "Exposição",
+                "placeholder_false": "false",
+                "placeholder_true": "true",
+                "default_value": false
+              }
+            },
+            "mediacao": {
+              "type": "Boolean",
+              "config": {
+                "label": "Mediação",
+                "placeholder_false": "false",
+                "placeholder_true": "true",
+                "default_value": false
               }
             },
             "titulo": {
@@ -212,134 +252,11 @@
           }
         }
       },
-      "Apoios": {
-        "type": "Group",
+      "teste": {
+        "type": "Text",
         "config": {
-          "label": "Apoios",
-          "repeat": true,
-          "fields": {
-            "local": {
-              "type": "Text",
-              "config": {
-                "label": "Local",
-                "placeholder": ""
-              }
-            },
-            "texto": {
-              "type": "StructuredText",
-              "config": {
-                "label": "Texto",
-                "placeholder": "",
-                "allowTargetBlank": true,
-                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-              }
-            },
-            "texto_2": {
-              "type": "StructuredText",
-              "config": {
-                "label": "Texto 2",
-                "placeholder": "",
-                "allowTargetBlank": true,
-                "multi": "paragraph,preformatted,heading1,heading2,heading3,heading4,heading5,heading6,strong,em,hyperlink,image,embed,list-item,o-list-item,rtl"
-              }
-            },
-            "imagem_1": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 1",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_2": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 2",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_3": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 3",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_4": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 4",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_5": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 5",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_6": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 6",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_7": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 7",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_8": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 8",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_9": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 9",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_10": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 10",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_11": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 11",
-                "constraint": {},
-                "thumbnails": []
-              }
-            },
-            "imagem_12": {
-              "type": "Image",
-              "config": {
-                "label": "Imagem 12",
-                "constraint": {},
-                "thumbnails": []
-              }
-            }
-          }
+          "label": "teste",
+          "placeholder": ""
         }
       },
       "slices": {

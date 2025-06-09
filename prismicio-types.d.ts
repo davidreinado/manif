@@ -65,7 +65,7 @@ interface FiltroDocumentData {
    * - **Tab**: Main
    * - **Documentation**: https://prismic.io/docs/field#select
    */
-  fundo: prismic.SelectField<"Laranja" | "Amarelo" | "Rosa">;
+  fundo: prismic.SelectField<"Laranja" | "Amarelo" | "Rosa" | "Branco">;
 
   /**
    * Slice Zone field in *Filtro*
@@ -167,7 +167,7 @@ export interface PageDocumentDataAgendaItem {
    * - **API ID Path**: page.agenda[].ano
    * - **Documentation**: https://prismic.io/docs/field#select
    */
-  ano: prismic.SelectField<"2025" | "2026" | "2027" | "2029" | "2030">;
+  ano: prismic.SelectField<"2025" | "2026" | "2027" | "2024">;
 
   /**
    * Mês field in *Home → Agenda*
@@ -178,18 +178,41 @@ export interface PageDocumentDataAgendaItem {
    * - **Documentation**: https://prismic.io/docs/field#select
    */
   mes: prismic.SelectField<
-    | "Janeiro"
-    | "Feveiro"
-    | "Março"
-    | "Abril"
-    | "Maio"
-    | "Junho"
-    | "Julho"
-    | "Agosto"
-    | "Setembro"
-    | "Otubro"
-    | "Novembro"
-    | "Dezembro"
+    | "jan"
+    | "fev"
+    | "mar"
+    | "abr"
+    | "mai"
+    | "jun"
+    | "jul"
+    | "ago"
+    | "set"
+    | "out"
+    | "nov"
+    | "dez"
+  >;
+
+  /**
+   * Mês Fim field in *Home → Agenda*
+   *
+   * - **Field Type**: Select
+   * - **Placeholder**: *None*
+   * - **API ID Path**: page.agenda[].mes_fim
+   * - **Documentation**: https://prismic.io/docs/field#select
+   */
+  mes_fim: prismic.SelectField<
+    | "jan"
+    | "fev"
+    | "mar"
+    | "abr"
+    | "mai"
+    | "jun"
+    | "jul"
+    | "ago"
+    | "set"
+    | "out"
+    | "nov"
+    | "dez"
   >;
 
   /**
@@ -307,14 +330,37 @@ export interface PageDocumentDataAgendaItem {
   localidade: prismic.KeyTextField;
 
   /**
-   * Tipo field in *Home → Agenda*
+   * Residência field in *Home → Agenda*
    *
-   * - **Field Type**: Select
+   * - **Field Type**: Boolean
    * - **Placeholder**: *None*
-   * - **API ID Path**: page.agenda[].tipo
-   * - **Documentation**: https://prismic.io/docs/field#select
+   * - **Default Value**: false
+   * - **API ID Path**: page.agenda[].residencia
+   * - **Documentation**: https://prismic.io/docs/field#boolean
    */
-  tipo: prismic.SelectField<"Residências" | "Obras" | "Mediação">;
+  residencia: prismic.BooleanField;
+
+  /**
+   * Exposição field in *Home → Agenda*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: page.agenda[].exposicao
+   * - **Documentation**: https://prismic.io/docs/field#boolean
+   */
+  exposicao: prismic.BooleanField;
+
+  /**
+   * Mediação field in *Home → Agenda*
+   *
+   * - **Field Type**: Boolean
+   * - **Placeholder**: *None*
+   * - **Default Value**: false
+   * - **API ID Path**: page.agenda[].mediacao
+   * - **Documentation**: https://prismic.io/docs/field#boolean
+   */
+  mediacao: prismic.BooleanField;
 
   /**
    * Título field in *Home → Agenda*
@@ -345,161 +391,6 @@ export interface PageDocumentDataAgendaItem {
    * - **Documentation**: https://prismic.io/docs/field#rich-text-title
    */
   local: prismic.RichTextField;
-}
-
-/**
- * Item in *Home → Apoios*
- */
-export interface PageDocumentDataApoiosItem {
-  /**
-   * Local field in *Home → Apoios*
-   *
-   * - **Field Type**: Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].local
-   * - **Documentation**: https://prismic.io/docs/field#key-text
-   */
-  local: prismic.KeyTextField;
-
-  /**
-   * Texto field in *Home → Apoios*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].texto
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  texto: prismic.RichTextField;
-
-  /**
-   * Texto 2 field in *Home → Apoios*
-   *
-   * - **Field Type**: Rich Text
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].texto_2
-   * - **Documentation**: https://prismic.io/docs/field#rich-text-title
-   */
-  texto_2: prismic.RichTextField;
-
-  /**
-   * Imagem 1 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_1
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_1: prismic.ImageField<never>;
-
-  /**
-   * Imagem 2 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_2
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_2: prismic.ImageField<never>;
-
-  /**
-   * Imagem 3 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_3
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_3: prismic.ImageField<never>;
-
-  /**
-   * Imagem 4 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_4
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_4: prismic.ImageField<never>;
-
-  /**
-   * Imagem 5 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_5
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_5: prismic.ImageField<never>;
-
-  /**
-   * Imagem 6 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_6
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_6: prismic.ImageField<never>;
-
-  /**
-   * Imagem 7 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_7
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_7: prismic.ImageField<never>;
-
-  /**
-   * Imagem 8 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_8
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_8: prismic.ImageField<never>;
-
-  /**
-   * Imagem 9 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_9
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_9: prismic.ImageField<never>;
-
-  /**
-   * Imagem 10 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_10
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_10: prismic.ImageField<never>;
-
-  /**
-   * Imagem 11 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_11
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_11: prismic.ImageField<never>;
-
-  /**
-   * Imagem 12 field in *Home → Apoios*
-   *
-   * - **Field Type**: Image
-   * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[].imagem_12
-   * - **Documentation**: https://prismic.io/docs/field#image
-   */
-  imagem_12: prismic.ImageField<never>;
 }
 
 type PageDocumentDataSlicesSlice = never;
@@ -542,15 +433,15 @@ interface PageDocumentData {
   agenda: prismic.GroupField<Simplify<PageDocumentDataAgendaItem>>;
 
   /**
-   * Apoios field in *Home*
+   * teste field in *Home*
    *
-   * - **Field Type**: Group
+   * - **Field Type**: Text
    * - **Placeholder**: *None*
-   * - **API ID Path**: page.Apoios[]
+   * - **API ID Path**: page.teste
    * - **Tab**: Main
-   * - **Documentation**: https://prismic.io/docs/field#group
+   * - **Documentation**: https://prismic.io/docs/field#key-text
    */
-  Apoios: prismic.GroupField<Simplify<PageDocumentDataApoiosItem>>;
+  teste: prismic.KeyTextField;
 
   /**
    * Slice Zone field in *Home*
@@ -829,7 +720,6 @@ declare module "@prismicio/client" {
       PageDocument,
       PageDocumentData,
       PageDocumentDataAgendaItem,
-      PageDocumentDataApoiosItem,
       PageDocumentDataSlicesSlice,
       UidDocument,
       UidDocumentData,

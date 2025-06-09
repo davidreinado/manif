@@ -121,7 +121,7 @@ export default function Cerebro({
     switch (selectedType) {
       case "Residências":
         return { top: "calc(50vh + 4px)" };
-      case "Obras":
+      case "Exposição":
         return { top: "calc(50vh + 67px)" };
       case "Mediação":
         return { top: "calc(50vh + 110px)" };

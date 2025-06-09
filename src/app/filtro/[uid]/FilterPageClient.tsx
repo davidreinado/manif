@@ -41,7 +41,12 @@ export default function FilterPageClient() {
                 setSecondaryColor("#FC3370");
                 document.documentElement.style.setProperty('--primary-color', "#FAB617");
                 document.documentElement.style.setProperty('--secondary-color', "#FC3370");
-
+            }
+            else {
+                setPrimaryColor("#fff");
+                setSecondaryColor("#808080");
+                document.documentElement.style.setProperty('--primary-color', "#fff");
+                document.documentElement.style.setProperty('--secondary-color', "#808080");
             }
         };
 

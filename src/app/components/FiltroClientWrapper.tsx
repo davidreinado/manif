@@ -19,6 +19,7 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
   }, []);
 
   useEffect(() => {
+    console.log(pathname)
     primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
   },[pathname, primaryColor])
 
