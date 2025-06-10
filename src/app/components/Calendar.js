@@ -355,7 +355,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
           {/* Combined filters */}
           {localidadesUIDs.length > 0 && (
             <CustomScrollbar direction="horizontal">
-              <div className="flex gap-[20px] pb-[7px] whitespace-nowrap items-center select-none scrollable"
+              <div className="flex gap-[20px] pb-[7px] pr-[4px] whitespace-nowrap items-center select-none scrollable"
                 onMouseDown={() => document.body.style.cursor = 'grabbing'}
                 onMouseUp={() => document.body.style.cursor = ''}
                 onMouseLeave={() => document.body.style.cursor = ''}>

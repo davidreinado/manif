@@ -57,7 +57,7 @@ export default function FilterPageClient() {
         return (
             <div className="h-full pr-[17px]">
                 <div>
-                    <h3 className="font-semibold text-[4rem] leading-[1.4] mb-[7px]">
+                    <h3 className="font-semibold text-[4rem] leading-[1.4]">
                         {filtroDoc.data.titulo}
                     </h3>
                     <SliceZone slices={filtroDoc.data.slices} components={components} />

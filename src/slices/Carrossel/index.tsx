@@ -44,7 +44,7 @@ const FullWidthImage: FC<FullWidthImageProps> = ({ slice }) => {
   speed={800} // 🔄 smoother transition (default is 300)
   autoplay={{ delay: 4500, disableOnInteraction: false }}
   modules={[Autoplay]}
-  className="w-full mb-[7px]"
+  className="w-full mb-[14px]"
 >
         {images.map((imgItem, index) => (
           <SwiperSlide key={index} className="w-full">
