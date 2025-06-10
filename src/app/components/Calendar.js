@@ -47,16 +47,16 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const [backgroundColor, setBackgroundColor] = useState("#808080");
 
   const itemMatchesType = (item, selectedType) => {
-  if (!selectedType) return true;
+    if (!selectedType) return true;
 
-  const typeMap = {
-    "Residência": item.residencia,
-    "Exposição": item.exposicao,
-    "Mediação": item.mediacao
+    const typeMap = {
+      "Residência": item.residencia,
+      "Exposição": item.exposicao,
+      "Mediação": item.mediacao
+    };
+
+    return Boolean(typeMap[selectedType]);
   };
-
-  return Boolean(typeMap[selectedType]);
-};
 
 
   // Filtered data calculations
@@ -86,36 +86,36 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
       ...allLocalidades.map(loc => ({ type: 'localidade', label: loc })),
     ];
 
-const filteredAgenda = useMemo(() => {
-  if (!home?.data?.agenda) return [];
+  const filteredAgenda = useMemo(() => {
+    if (!home?.data?.agenda) return [];
 
-  // Função que verifica se o item tem o tipo selecionado em algum dos campos
-  const itemMatchesType = (item, selectedType) => {
-    if (!selectedType) return true; // se não há filtro por tipo, aceita tudo
+    // Função que verifica se o item tem o tipo selecionado em algum dos campos
+    const itemMatchesType = (item, selectedType) => {
+      if (!selectedType) return true; // se não há filtro por tipo, aceita tudo
 
-    const typeMap = {
-      "Residência": item.residencia,
-      "Exposição": item.exposicao,
-      "Mediação": item.mediacao,
+      const typeMap = {
+        "Residência": item.residencia,
+        "Exposição": item.exposicao,
+        "Mediação": item.mediacao,
+      };
+
+      return Boolean(typeMap[selectedType]);
     };
 
-    return Boolean(typeMap[selectedType]);
-  };
-
-  return home.data.agenda.filter(item => {
-    return (
-      (selectedYear ? item.ano === selectedYear : true) &&
-      (selectedMonth ? item.mes === selectedMonth : true) &&
-      (selectedDistrict ? item.distrito === selectedDistrict : true) &&
-      itemMatchesType(item, selectedType) &&
-      (selectedCombinedFilter
-        ? selectedCombinedFilter.type === 'agente'
-          ? item.agente === selectedCombinedFilter.label
-          : item.localidade === selectedCombinedFilter.label
-        : true)
-    );
-  });
-}, [home, selectedYear, selectedMonth, selectedDistrict, selectedType, selectedCombinedFilter]);
+    return home.data.agenda.filter(item => {
+      return (
+        (selectedYear ? item.ano === selectedYear : true) &&
+        (selectedMonth ? item.mes === selectedMonth : true) &&
+        (selectedDistrict ? item.distrito === selectedDistrict : true) &&
+        itemMatchesType(item, selectedType) &&
+        (selectedCombinedFilter
+          ? selectedCombinedFilter.type === 'agente'
+            ? item.agente === selectedCombinedFilter.label
+            : item.localidade === selectedCombinedFilter.label
+          : true)
+      );
+    });
+  }, [home, selectedYear, selectedMonth, selectedDistrict, selectedType, selectedCombinedFilter]);
 
   // Lenis initialization with optimized frosty effect
   useEffect(() => {
@@ -323,125 +323,124 @@ const filteredAgenda = useMemo(() => {
 
           {/* Botões de mês (aparecem só se o ano estiver selecionado) */}
           {months.map((month) => {
-              const isSelected = selectedMonth === null || selectedMonth === month;
-              const isHovered = hoveredMonths === month;
-              const isOtherHovered = hoveredMonths && hoveredMonths !== month;
-              const className = `font-cc text-[1.8rem] uppercase transition-all duration-225 ease-in-out                 
+            const isSelected = selectedMonth === null || selectedMonth === month;
+            const isHovered = hoveredMonths === month;
+            const isOtherHovered = hoveredMonths && hoveredMonths !== month;
+            const className = `font-cc text-[1.8rem] uppercase transition-all duration-225 ease-in-out                 
         ${isSelected && !hoveredMonths ? 'text-black font-bold active' : ''}
         ${isHovered ? 'text-black font-bold' : ''}
         ${!isSelected && !hoveredMonths ? 'hover:text-black' : ''}
       `;
-              return (
-                <button
-                  key={month}
-                  onClick={() => toggleMonth(month)}
-                  onMouseEnter={() => setHoveredMonths(month)}
-                  onMouseLeave={() => setHoveredMonths(null)}
-                  className={className}
-                  style={
-                    isOtherHovered
+            return (
+              <button
+                key={month}
+                onClick={() => toggleMonth(month)}
+                onMouseEnter={() => setHoveredMonths(month)}
+                onMouseLeave={() => setHoveredMonths(null)}
+                className={className}
+                style={
+                  isOtherHovered
+                    ? { color: secondaryColor }
+                    : !isSelected && !hoveredMonths
                       ? { color: secondaryColor }
-                      : !isSelected && !hoveredMonths
-                        ? { color: secondaryColor }
-                        : {}
-                  }
-                >
-                  {month}
-                </button>
-              );
-            })}
+                      : {}
+                }
+              >
+                {month}
+              </button>
+            );
+          })}
         </div>
+        <div>
+          {/* Combined filters */}
+          {localidadesUIDs.length > 0 && (
+            <CustomScrollbar direction="horizontal">
+              <div className="flex gap-[20px] pb-[7px] whitespace-nowrap items-center select-none scrollable"
+                onMouseDown={() => document.body.style.cursor = 'grabbing'}
+                onMouseUp={() => document.body.style.cursor = ''}
+                onMouseLeave={() => document.body.style.cursor = ''}>
+                {combinedFilters.map(({ type, label }) => {
+                  const slug = slugify(label);
+                  const isAgente = type === 'agente';
+                  const hasPage = isAgente
+                    ? agentesUIDs.includes(slug)
+                    : localidadesUIDs.includes(slug);
 
+                  const isSelected =
+                    !selectedCombinedFilter ||
+                    (selectedCombinedFilter.label === label && selectedCombinedFilter.type === type);
 
-        {/* Combined filters */}
-        { localidadesUIDs.length > 0 && (
-          <CustomScrollbar direction="horizontal">
-            <div className="flex gap-[20px] whitespace-nowrap items-center select-none scrollable"
-              onMouseDown={() => document.body.style.cursor = 'grabbing'}
-              onMouseUp={() => document.body.style.cursor = ''}
-              onMouseLeave={() => document.body.style.cursor = ''}>
-              {combinedFilters.map(({ type, label }) => {
-                const slug = slugify(label);
-                const isAgente = type === 'agente';
-                const hasPage = isAgente
-                  ? agentesUIDs.includes(slug)
-                  : localidadesUIDs.includes(slug);
+                  const isHovered =
+                    hoveredCombinedFilter &&
+                    hoveredCombinedFilter.label === label &&
+                    hoveredCombinedFilter.type === type;
 
-                const isSelected =
-                  !selectedCombinedFilter ||
-                  (selectedCombinedFilter.label === label && selectedCombinedFilter.type === type);
+                  const isOtherHovered =
+                    hoveredCombinedFilter &&
+                    (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
 
-                const isHovered =
-                  hoveredCombinedFilter &&
-                  hoveredCombinedFilter.label === label &&
-                  hoveredCombinedFilter.type === type;
-
-                const isOtherHovered =
-                  hoveredCombinedFilter &&
-                  (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
-
-                const className = `
+                  const className = `
                   text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4] cursor-pointer
                   ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
                   ${isHovered ? 'active' : ''}
                   ${!isSelected && !hoveredCombinedFilter ? 'text-link hover:text-black' : ''}
                 `;
 
-                const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });
-                const handleMouseLeave = () => setHoveredCombinedFilter(null);
+                  const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });
+                  const handleMouseLeave = () => setHoveredCombinedFilter(null);
 
-                const handleClick = () => {
-                  const next =
-                    selectedCombinedFilter?.label === label &&
-                      selectedCombinedFilter?.type === type
-                      ? null
-                      : { type, label };
+                  const handleClick = () => {
+                    const next =
+                      selectedCombinedFilter?.label === label &&
+                        selectedCombinedFilter?.type === type
+                        ? null
+                        : { type, label };
 
-                  setSelectedCombinedFilter(next);
-                  router.push('/', { scroll: false }); // Go to home
+                    setSelectedCombinedFilter(next);
+                    router.push('/', { scroll: false }); // Go to home
 
-                  if (!isAgente && hasPage) {
-                    setActiveButton("Apoios");
-                    setTimeout(() => {
-                      window.history.replaceState({}, '', `/?localidade=${slug}`);
-                      setFiltro("");
-                    }, 50); // Wait a short time to ensure route change
-                  }
-                };
+                    if (!isAgente && hasPage) {
+                      setActiveButton("Apoios");
+                      setTimeout(() => {
+                        window.history.replaceState({}, '', `/?localidade=${slug}`);
+                        setFiltro("");
+                      }, 50); // Wait a short time to ensure route change
+                    }
+                  };
 
-               return (
-                  <div key={`${type}-${label}`}>
-                    {isAgente && hasPage && pathname !== `/filtro/${slug}` ? (
-                      <Link
-                        href={`/filtro/${slug}`}
-                        onClick={handleClick}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        scroll={false}
-                        prefetch={true}
-                        className={className}
-                        style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
-                      >
-                        {label}
-                      </Link>
-                    ) : (
-                      <button
-                        onClick={handleClick}
-                        onMouseEnter={handleMouseEnter}
-                        onMouseLeave={handleMouseLeave}
-                        className={className}
-                        style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
-                      >
-                        {label}
-                      </button>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </CustomScrollbar>
-        )}
-
+                  return (
+                    <div key={`${type}-${label}`}>
+                      {isAgente && hasPage && pathname !== `/filtro/${slug}` ? (
+                        <Link
+                          href={`/filtro/${slug}`}
+                          onClick={handleClick}
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
+                          scroll={false}
+                          prefetch={true}
+                          className={className}
+                          style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
+                        >
+                          {label}
+                        </Link>
+                      ) : (
+                        <button
+                          onClick={handleClick}
+                          onMouseEnter={handleMouseEnter}
+                          onMouseLeave={handleMouseLeave}
+                          className={className}
+                          style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
+                        >
+                          {label}
+                        </button>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </CustomScrollbar>
+          )}
+        </div>
         {/* Main content with frosty effect */}
         <div className="relative">
           {/* Frosty overlay */}
@@ -476,7 +475,7 @@ const filteredAgenda = useMemo(() => {
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
-                    className="pr-[7px] pt-[7px]"
+                    className="pr-[18px] pt-[7px]"
                   >
                     {filteredAgenda.length > 0 ? (
                       <motion.div

@@ -71,7 +71,7 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
 
 
   return (
-    <div className="pt-[94px] relative mr-[14px]">
+    <div className="pt-[94px] relative mr-[4px]">
       {/* Frosty overlay - now properly positioned */}
       <div
         ref={frostyRef}

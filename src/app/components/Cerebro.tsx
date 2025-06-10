@@ -211,10 +211,10 @@ export default function Cerebro({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0, opacity: 0 }}
           transition={{ duration: 0.125, ease: "easeOut" }}
-          className="fixed bottom-[28px] right-[28px] w-[calc(50vw-35px)] h-[calc(25vh-35px)] bg-black text-white z-50 p-[14px] font-ramboia text-[1.2rem] flex origin-bottom-right"
+          className="fixed bottom-[28px] right-[28px] w-[calc(100vw-55px)] md:w-[calc(50vw-35px)] h-[calc(50vh-35px)] md:h-[calc(25vh-35px)] bg-black text-white z-50 p-[14px] font-ramboia text-[1.2rem] flex origin-bottom-right"
         >
           <div className="w-[50%]"></div>
-          <div className="flex flex-col w-[50%] text-end h-full">
+          <div className="flex flex-col w-[100%] md:w-[50%] text-end h-full">
             <p>Filipa Morgado, <i>direção</i></p>
             <p>Gonçalo Fialho, <i>design</i></p>
             <p>David Reis, <i>programador</i></p>

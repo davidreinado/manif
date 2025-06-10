@@ -207,7 +207,7 @@ export default function ArtistsResidencyAndCalendar({
   return (
     <div
       ref={containerRef}
-      className="font-ramboia h-[200vh] flex flex-col justify-between text-start mx-[14px] md:mx-[42px] relative"
+      className="font-ramboia h-[200vh] flex flex-col justify-between text-start mx-[14px] md:mx-[26px] relative"
     >
       {/* Sticky H2 */}
       <div
