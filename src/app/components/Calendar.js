@@ -456,7 +456,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
             <CustomScrollbar direction="vertical">
               <div
                 ref={scrollContainerRef}
-                className="h-[calc(100vh-109px)] pt-[14px] relative"
+                className="h-[calc(100vh-109px)] lg:h-[calc(100vh-109px)] pt-[14px] relative"
               >
                 <AnimatePresence mode="wait">
                   <motion.div

@@ -315,7 +315,7 @@ export default function ArtistsResidencyAndCalendar({
                       </div>
                     ) : ( */}
                       <CustomScrollbar direction="vertical">
-                        <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
+                        <div ref={scrollContainerRef} className="max-h-[calc(100vh)] lg:max-h-[calc(100vh-107px)] py-[14px]">
                           <div className="flex flex-wrap gap-[28px] pt-[28px]">
                             {localidadeDoc.data.logo?.map((item, index) => {
                               const image = item.imagem;
