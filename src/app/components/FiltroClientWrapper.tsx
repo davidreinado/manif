@@ -14,14 +14,17 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
   const primaryColor = useThemeStore((state) => state.primaryColor);
   const pathname = usePathname();
 
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
+
   useEffect(() => {
     setIsMounted(true);
+    setIsMobile(typeof window !== "undefined" && window.innerWidth < 768)
   }, []);
 
   useEffect(() => {
     console.log(pathname)
     primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
-  },[pathname, primaryColor])
+  }, [pathname, primaryColor])
 
   useEffect(() => {
     if (!isMounted || !scrollContainerRef.current) return;
@@ -71,7 +74,7 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
 
 
   return (
-    <div className="pt-[94px] relative mr-[4px]">
+    <div className="pt-[94px] relative mr-[4px] mt-[14px] lg:mt-[0]">
       {/* Frosty overlay - now properly positioned */}
       <div
         ref={frostyRef}
@@ -99,11 +102,17 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
       />
 
       {isMounted && (
-        <CustomScrollbar direction="vertical">
-          <div ref={scrollContainerRef} className="max-h-[calc(100vh-86px)]">
+        isMobile ? (
+          <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-86px)]">
             <div>{children}</div>
           </div>
-        </CustomScrollbar>
+        ) : (
+          <CustomScrollbar direction="vertical">
+            <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-86px)]">
+              <div>{children}</div>
+            </div>
+          </CustomScrollbar>
+        )
       )}
     </div>
   );

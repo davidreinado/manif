@@ -55,7 +55,7 @@ export default function FilterPageClient() {
 
     if (filtroDoc) {
         return (
-            <div className="h-full pr-[17px]">
+            <div className="h-full pl-[14px] lg:pl-0 pr-[11px] lg:pr-[17px] ">
                 <div>
                     <h3 className="font-semibold text-[4rem] leading-[1.4]">
                         {filtroDoc.data.titulo}

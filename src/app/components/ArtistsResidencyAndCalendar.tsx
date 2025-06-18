@@ -56,6 +56,7 @@ export default function ArtistsResidencyAndCalendar({
   const [localidadeDoc, setLocalidadeDoc] = useState(null);
   const containerRef = useRef(null);
   const textRef = useRef(null);
+  const h2ref = useRef(null);
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const frostyRef = useRef<HTMLDivElement>(null);
@@ -63,10 +64,11 @@ export default function ArtistsResidencyAndCalendar({
   const [backgroundColor, setBackgroundColor] = useState("#808080");
   const primaryColor = useThemeStore((state) => state.primaryColor);
   const [isMounted, setIsMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
 
-    useEffect(() => {
+  useEffect(() => {
     primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
-  },[pathname, primaryColor])
+  }, [pathname, primaryColor])
 
   // Sync filtro Zustand state with the URL param "localidade"
   useEffect(() => {
@@ -86,8 +88,8 @@ export default function ArtistsResidencyAndCalendar({
   }, [pathname]);
 
   useEffect(() => {
-    if(activeButton === "Apoios" && localidadeDoc)
-    setIsMounted(true);
+    if (activeButton === "Apoios" && localidadeDoc)
+      setIsMounted(true);
   }, [activeButton, localidadeDoc]);
 
   useEffect(() => {
@@ -173,14 +175,16 @@ export default function ArtistsResidencyAndCalendar({
   }, [searchParams, existingLocalidadeDocs]);
 
   useEffect(() => {
+    setIsMobile(typeof window !== "undefined" && window.innerWidth < 768)
+
     const updateLayout = () => {
       const height = window.innerHeight;
       const width = window.innerWidth;
-      const isMobile = width < 768;
+      const isitMobile = width < 768;
 
-      const fontSize = isMobile ? height * 0.08 : height * 0.27;
+      const fontSize = isitMobile ? height * 0.08 : height * 0.27;
       setInitialFontSize(`${fontSize}px`);
-      setScrollRangeStart(isMobile ? 0.4 : 0.8);
+      setScrollRangeStart(isitMobile ? 0.4 : 0.8);
     };
 
     updateLayout();
@@ -233,7 +237,7 @@ export default function ArtistsResidencyAndCalendar({
           <div className="w-full lg:w-1/2">
             {activeButton === "Sobre" && (
               <motion.div
-                className="text-[1.95rem] font-medium font-ramboia mt-[88px] pr-[21px] sticky top-[60px]"
+                className="text-[1.95rem] font-medium font-ramboia mt-[109px] lg:mt-[88px] pr-[21px] sticky top-[60px]"
                 style={{
                   x: h2XPosition,
                   pointerEvents: isH2Visible ? "auto" : "none",
@@ -285,33 +289,64 @@ export default function ArtistsResidencyAndCalendar({
                       }}
 
                     />
-                    <CustomScrollbar direction="vertical">
-                    <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
-                      <div className="flex flex-wrap gap-[28px]">
-                        {localidadeDoc.data.logo?.map((item, index) => {
-                          const image = item.imagem;
+                    {isMobile ? (
+                        <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-107px)] py-[14px]">
+                          <div className="flex flex-wrap gap-[28px] mt-[21px]">
+                            {localidadeDoc.data.logo?.map((item, index) => {
+                              const image = item.imagem;
 
-                          return (
-                            image?.url && (
-                              <div
-                                key={`logo_image_${index}`}
-                                className="w-[19%] flex justify-center items-center"
-                              >
-                                <Image
-                                  src={image.url}
-                                  alt={image.alt || `Imagem ${index + 1}`}
-                                  width={0}
-                                  height={0}
-                                  sizes="(max-width: 768px) 100vw, 20vw"
-                                  className="w-full h-auto object-contain max-h-24"
-                                />
-                              </div>
-                            )
-                          );
-                        })}
-                      </div>
-                    </div>
-                    </CustomScrollbar>
+                              return (
+                                image?.url && (
+                                  <div
+                                    key={`logo_image_${index}`}
+                                    className="w-[25%] flex justify-center items-center"
+                                  >
+                                    <Image
+                                      src={image.url}
+                                      alt={image.alt || `Imagem ${index + 1}`}
+                                      width={0}
+                                      height={0}
+                                      sizes="25vw"
+                                      className="w-full h-auto object-contain max-h-24"
+                                    />
+                                  </div>
+                                )
+                              );
+                            })}
+                          </div>
+                        </div>      
+                    ) : (
+                      // Conteúdo alternativo ou apenas o mesmo conteúdo sem o scrollbar
+                      <>
+                      <CustomScrollbar direction="vertical">
+                        <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-107px)] py-[14px]">
+                          <div className="flex flex-wrap gap-[28px] pt-[28px]">
+                            {localidadeDoc.data.logo?.map((item, index) => {
+                              const image = item.imagem;
+
+                              return (
+                                image?.url && (
+                                  <div
+                                    key={`logo_image_${index}`}
+                                    className="w-[19%] flex justify-center items-center"
+                                  >
+                                    <Image
+                                      src={image.url}
+                                      alt={image.alt || `Imagem ${index + 1}`}
+                                      width={0}
+                                      height={0}
+                                      sizes="(max-width: 768px) 100vw, 20vw"
+                                      className="w-full h-auto object-contain max-h-24"
+                                    />
+                                  </div>
+                                )
+                              );
+                            })}
+                          </div>
+                        </div>      
+                        </CustomScrollbar></>
+                    )}
+
                   </motion.div>
                 </AnimatePresence>
               </motion.div>

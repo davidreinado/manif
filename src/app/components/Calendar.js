@@ -11,6 +11,10 @@ import CustomScrollbar from '@/app/components/CustomScrollbar';
 import { useThemeStore } from "@/app/stores/useThemeStore"; // Make sure this import is present
 import { usePathname } from "next/navigation";
 import path from 'path';
+import CombinedFilters from "./CombinedFilters"
+import TypeOptionsFilter from "./TypeOptionsFilter"
+import DistrictsFilter from "./DistrictsFilter"
+
 
 export default function Calendar({ home, selectedType, setSelectedType, agenda, localidades: localidadesPages = [], agentes: agentesPages = [], setActiveButton }) {
   // State declarations
@@ -35,6 +39,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const lenisRef = useRef(null);
   const scrollContainerRef = useRef(null);
   const frostyRef = useRef(null);
+  const mobileFilterRef = useRef(null);
   const [hoveredDistrict, setHoveredDistrict] = useState(null);
   const [hoveredMonths, setHoveredMonths] = useState(null);
   const [hoveredType, setHoveredType] = useState(null);
@@ -45,6 +50,12 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const primaryColor = useThemeStore((state) => state.primaryColor);
 
   const [backgroundColor, setBackgroundColor] = useState("#808080");
+  const [isMobileFilterVisible, setIsMobileFilterVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
+
+  const toggleMobileFilter = () => {
+    setIsMobileFilterVisible(prev => !prev);
+  };
 
   const itemMatchesType = (item, selectedType) => {
     if (!selectedType) return true;
@@ -120,6 +131,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   // Lenis initialization with optimized frosty effect
   useEffect(() => {
     setIsMounted(true);
+    setIsMobile(typeof window !== "undefined" && window.innerWidth < 768)
 
     return () => {
       if (lenisRef.current) {
@@ -201,89 +213,38 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
       <div className="w-full lg:w-[20%] mb-4 lg:mb-0">
         <div className="hidden sticky top-0 pt-[14px] h-[calc(100vh-8px)] md:flex flex-col">
           <div className='h-[50%] mt-0'>
-            <ul>
-              {districts.map((district) => {
-                const isSelected = selectedDistrict === null || selectedDistrict === district;
-                const isHovered = hoveredDistrict === district;
-                const isOtherHovered = hoveredDistrict && hoveredDistrict !== district;
-
-                const className = `
-                  text-link text-[1.6rem] w-full text-left py-1 text-cc
-                  ${isSelected && !hoveredDistrict ? 'text-black font-bold active' : ''}
-                  ${isHovered ? 'text-black font-bold' : ''}
-                  ${!isSelected && !hoveredDistrict ? 'hover:text-black' : ''}
-                `;
-
-                const handleClick = (district) => {
-
-                  setActiveButton("Sobre");
-                  if (pathname !== "/") {
-                    router.push('/', { scroll: false }); // Go to home
-                    setTimeout(() => {
-                      // window.history.replaceState({}, '', `/?localidade=${slug}`);
-                      setFiltro("")
-                    }, 50); // Wait a short time to ensure route change
-
-                  }
-
-                  toggleType(null)
-                  toggleDistrict(district)
-                };
-
-
-                return (
-                  <li key={district}>
-                    <button
-                      onClick={() => handleClick(district)}
-                      onMouseEnter={() => setHoveredDistrict(district)}
-                      onMouseLeave={() => setHoveredDistrict(null)}
-                      className={className}
-                      style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredType ? { color: secondaryColor } : {}}
-
-                    >
-                      {district}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+            <DistrictsFilter
+              districts={districts}
+              selectedDistrict={selectedDistrict}
+              hoveredDistrict={hoveredDistrict}
+              setHoveredDistrict={setHoveredDistrict}
+              setSelectedDistrict={setSelectedDistrict}
+              setActiveButton={setActiveButton}
+              setFiltro={setFiltro}
+              router={router}
+              pathname={pathname}
+              secondaryColor={secondaryColor}
+              setSelectedType={setSelectedType}
+            />
           </div>
+          {/* Type Options Filter */}
           <div className='h-[50%] mt-[8px] hidden md:block'>
-            <ul>
-              {Object.entries(typeOptions).map(([value, label]) => {
-                const isSelected = selectedType === null || selectedType === value;
-                const isHovered = hoveredType === value;
-                const isOtherHovered = hoveredType && hoveredType !== value;
-
-                const className = `
-                  text-link text-[1.6rem] w-full text-left text-cc mb-[20px] leading-[1.4]
-                  ${isSelected && !hoveredType ? 'text-black font-bold active' : ''}
-                  ${isHovered ? 'text-black font-bold' : ''}
-                  ${!isSelected && !hoveredType ? 'hover:text-black' : ''}
-                `;
-
-                return (
-                  <li key={value}>
-                    <button
-                      onClick={() => toggleType(value)}
-                      onMouseEnter={() => setHoveredType(value)}
-                      onMouseLeave={() => setHoveredType(null)}
-                      className={className}
-                      style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredType ? { color: secondaryColor } : {}}
-
-                    >
-                      {label}
-                    </button>
-                  </li>
-                );
-              })}
-            </ul>
+            <TypeOptionsFilter
+              typeOptions={typeOptions}
+              selectedType={selectedType}
+              hoveredType={hoveredType}
+              setHoveredType={setHoveredType}
+              setSelectedType={setSelectedType}
+              setSelectedCombinedFilter={setSelectedCombinedFilter}
+              router={router}
+              secondaryColor={secondaryColor}
+            />
           </div>
         </div>
       </div>
 
       {/* Right content area */}
-      <div className="w-full lg:w-[80%] flex flex-col pt-[20px]">
+      <div className="w-full lg:w-[80%] flex flex-col lg:pt-[20px]">
 
         <div className="flex flex-wrap items-center gap-x-[20px] gap-y-[7px] leading-none mb-[14px]">
           {/* Botões de ano */}
@@ -351,96 +312,77 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
             );
           })}
         </div>
-        <div>
-          {/* Combined filters */}
-          {localidadesUIDs.length > 0 && (
-            <CustomScrollbar direction="horizontal">
-              <div className="flex gap-[20px] pb-[7px] pr-[4px] whitespace-nowrap items-center select-none scrollable"
-                onMouseDown={() => document.body.style.cursor = 'grabbing'}
-                onMouseUp={() => document.body.style.cursor = ''}
-                onMouseLeave={() => document.body.style.cursor = ''}>
-                {combinedFilters.map(({ type, label }) => {
-                  const slug = slugify(label);
-                  const isAgente = type === 'agente';
-                  const hasPage = isAgente
-                    ? agentesUIDs.includes(slug)
-                    : localidadesUIDs.includes(slug);
-
-                  const isSelected =
-                    !selectedCombinedFilter ||
-                    (selectedCombinedFilter.label === label && selectedCombinedFilter.type === type);
-
-                  const isHovered =
-                    hoveredCombinedFilter &&
-                    hoveredCombinedFilter.label === label &&
-                    hoveredCombinedFilter.type === type;
-
-                  const isOtherHovered =
-                    hoveredCombinedFilter &&
-                    (hoveredCombinedFilter.label !== label || hoveredCombinedFilter.type !== type);
-
-                  const className = `
-                  text-link text-[1.6rem] font-cc m-0 p-0 whitespace-nowrap leading-[1.4] cursor-pointer
-                  ${isSelected && !hoveredCombinedFilter ? 'active' : ''}
-                  ${isHovered ? 'active' : ''}
-                  ${!isSelected && !hoveredCombinedFilter ? 'text-link hover:text-black' : ''}
-                `;
-
-                  const handleMouseEnter = () => setHoveredCombinedFilter({ type, label });
-                  const handleMouseLeave = () => setHoveredCombinedFilter(null);
-
-                  const handleClick = () => {
-                    const next =
-                      selectedCombinedFilter?.label === label &&
-                        selectedCombinedFilter?.type === type
-                        ? null
-                        : { type, label };
-
-                    setSelectedCombinedFilter(next);
-                    router.push('/', { scroll: false }); // Go to home
-
-                    if (!isAgente && hasPage) {
-                      setActiveButton("Apoios");
-                      setTimeout(() => {
-                        window.history.replaceState({}, '', `/?localidade=${slug}`);
-                        setFiltro("");
-                      }, 50); // Wait a short time to ensure route change
-                    }
-                  };
-
-                  return (
-                    <div key={`${type}-${label}`}>
-                      {isAgente && hasPage && pathname !== `/filtro/${slug}` ? (
-                        <Link
-                          href={`/filtro/${slug}`}
-                          onClick={handleClick}
-                          onMouseEnter={handleMouseEnter}
-                          onMouseLeave={handleMouseLeave}
-                          scroll={false}
-                          prefetch={true}
-                          className={className}
-                          style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
-                        >
-                          {label}
-                        </Link>
-                      ) : (
-                        <button
-                          onClick={handleClick}
-                          onMouseEnter={handleMouseEnter}
-                          onMouseLeave={handleMouseLeave}
-                          className={className}
-                          style={isOtherHovered ? { color: secondaryColor } : !isSelected && !hoveredCombinedFilter ? { color: secondaryColor } : {}}
-                        >
-                          {label}
-                        </button>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </CustomScrollbar>
-          )}
+        <div className='flex flex-col lg:hidden'>
         </div>
+
+        <div className="block lg:hidden w-fit" style={{ background: "#ffff00" }}>
+          <button className='text-[1.2rem]' onClick={toggleMobileFilter}>{isMobileFilterVisible ? "-" : "+"} filtros</button>
+          <div ref={mobileFilterRef}
+            className={`${isMobileFilterVisible ? 'block' : 'hidden'} mt-[7px] transition-all duration-[125]`}>
+            <div className='text-[1.2rem] italic'>distritos</div>
+            <DistrictsFilter
+              districts={districts}
+              selectedDistrict={selectedDistrict}
+              hoveredDistrict={hoveredDistrict}
+              setHoveredDistrict={setHoveredDistrict}
+              setSelectedDistrict={setSelectedDistrict}
+              setActiveButton={setActiveButton}
+              setFiltro={setFiltro}
+              router={router}
+              pathname={pathname}
+              secondaryColor={secondaryColor}
+              setSelectedType={setSelectedType}
+            />
+
+                        <div className='text-[1.2rem] italic mt-[28px] lg:[mt-0]'>campos de trabalho</div>
+<TypeOptionsFilter
+              typeOptions={typeOptions}
+              selectedType={selectedType}
+              hoveredType={hoveredType}
+              setHoveredType={setHoveredType}
+              setSelectedType={setSelectedType}
+              setSelectedCombinedFilter={setSelectedCombinedFilter}
+              router={router}
+              secondaryColor={secondaryColor}
+            />
+
+            <div className='text-[1.2rem] italic mt-[28px] lg:[mt-0] '>apoios e intervinientes</div>
+            {/* Combined filters */}
+            <CombinedFilters
+              localidadesUIDs={localidadesUIDs}
+              agentesUIDs={agentesUIDs}
+              combinedFilters={combinedFilters}
+              selectedCombinedFilter={selectedCombinedFilter}
+              hoveredCombinedFilter={hoveredCombinedFilter}
+              setHoveredCombinedFilter={setHoveredCombinedFilter}
+              setSelectedCombinedFilter={setSelectedCombinedFilter}
+              setActiveButton={setActiveButton}
+              setFiltro={setFiltro}
+              router={router}
+              pathname={pathname}
+              secondaryColor={secondaryColor}
+            />
+          </div>
+        </div>
+
+        <div className="hidden lg:flex">
+          {/* Combined filters */}
+          <CombinedFilters
+            localidadesUIDs={localidadesUIDs}
+            agentesUIDs={agentesUIDs}
+            combinedFilters={combinedFilters}
+            selectedCombinedFilter={selectedCombinedFilter}
+            hoveredCombinedFilter={hoveredCombinedFilter}
+            setHoveredCombinedFilter={setHoveredCombinedFilter}
+            setSelectedCombinedFilter={setSelectedCombinedFilter}
+            setActiveButton={setActiveButton}
+            setFiltro={setFiltro}
+            router={router}
+            pathname={pathname}
+            secondaryColor={secondaryColor}
+          />
+        </div>
+
         {/* Main content with frosty effect */}
         <div className="relative">
           {/* Frosty overlay */}
@@ -466,7 +408,51 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                       opacity-0 transition-opacity duration-300 will-change-opacity"
           />
 
-          {isMounted && (
+      {isMounted && (
+        isMobile ? (
+              <div
+                ref={scrollContainerRef}
+                className="h-[calc(100vh-109px)] pt-[14px] relative"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
+                    className="pr-[18px]"
+                  >
+                    {filteredAgenda.length > 0 ? (
+                      <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="exit"
+                        variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+                        className="space-y-4"
+                      >
+                        {[...filteredAgenda].reverse().map((event, index) => (
+                          <motion.div
+                            key={event.id ?? `event-${index}`}
+                            variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
+                            transition={{ duration: 0.125, ease: "easeOut" }}
+                          >
+                            <EventItem event={event} secondaryColor={secondaryColor} />
+                          </motion.div>
+                        ))}
+                      </motion.div>
+                    ) : (
+                      <motion.p
+                        key="empty"
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.3 }}
+                        className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
+                      >
+                        Nenhum evento encontrado com os filtros selecionados.
+                      </motion.p>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+        ) : (
             <CustomScrollbar direction="vertical">
               <div
                 ref={scrollContainerRef}
@@ -511,7 +497,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                 </AnimatePresence>
               </div>
             </CustomScrollbar>
-          )}
+        )
+      )}
         </div>
       </div>
     </div>

@@ -27,8 +27,9 @@ export default function Cerebro({
   const copyRef = useRef(null);
   const lenisScrollY = useMotionValue(0);
   const searchParams = useSearchParams();
-  const [showCopiedBox, setShowCopiedBox] = useState(false);
 
+  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
+  const [showCopiedBox, setShowCopiedBox] = useState(false);
   const [activeButton, setActiveButton] = useState("Sobre");
   const [isAtBottom, setIsAtBottom] = useState(false);
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -36,6 +37,8 @@ export default function Cerebro({
 
   // Initialize Lenis only once
   useEffect(() => {
+    setIsMobile(typeof window !== "undefined" && window.innerWidth < 768)
+
     const lenis = new Lenis({
       lerp: 0.02,
       duration: 0.8,
@@ -107,6 +110,9 @@ export default function Cerebro({
   };
 
   const getNavPosition = () => {
+    if (isMobile) {
+      return { left: "14px" };
+    }
     switch (activeButton) {
       case "Sobre":
         return { left: "14px" };
@@ -118,6 +124,9 @@ export default function Cerebro({
   };
 
   const getTypePosition = () => {
+    if (isMobile) {
+      return { top: "calc(50vh - 7px)" };
+    }
     switch (selectedType) {
       case "Residências":
         return { top: "calc(50vh + 4px)" };
