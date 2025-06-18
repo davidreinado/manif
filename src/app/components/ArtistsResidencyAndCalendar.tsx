@@ -64,7 +64,6 @@ export default function ArtistsResidencyAndCalendar({
   const [backgroundColor, setBackgroundColor] = useState("#808080");
   const primaryColor = useThemeStore((state) => state.primaryColor);
   const [isMounted, setIsMounted] = useState(false);
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
 
   useEffect(() => {
     primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
@@ -175,7 +174,6 @@ export default function ArtistsResidencyAndCalendar({
   }, [searchParams, existingLocalidadeDocs]);
 
   useEffect(() => {
-    setIsMobile(typeof window !== "undefined" && window.innerWidth < 768)
 
     const updateLayout = () => {
       const height = window.innerHeight;
@@ -289,7 +287,7 @@ export default function ArtistsResidencyAndCalendar({
                       }}
 
                     />
-                    {isMobile ? (
+                    {/* {isMobile ? (
                       <div ref={scrollContainerRef} className="max-h-[calc(100vh)] py-[14px]">
                         <div className="flex flex-wrap gap-[28px] mt-[21px]">
                           {localidadeDoc.data.logo?.map((item, index) => {
@@ -315,8 +313,7 @@ export default function ArtistsResidencyAndCalendar({
                           })}
                         </div>
                       </div>
-                    ) : (
-                      // Conteúdo alternativo ou apenas o mesmo conteúdo sem o scrollbar
+                    ) : ( */}
                       <CustomScrollbar direction="vertical">
                         <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
                           <div className="flex flex-wrap gap-[28px] pt-[28px]">
@@ -344,7 +341,7 @@ export default function ArtistsResidencyAndCalendar({
                           </div>
                         </div>
                       </CustomScrollbar>
-                    )}
+                    {/* )} */}
 
                   </motion.div>
                 </AnimatePresence>
