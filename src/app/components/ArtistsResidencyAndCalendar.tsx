@@ -290,36 +290,35 @@ export default function ArtistsResidencyAndCalendar({
 
                     />
                     {isMobile ? (
-                        <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-107px)] py-[14px]">
-                          <div className="flex flex-wrap gap-[28px] mt-[21px]">
-                            {localidadeDoc.data.logo?.map((item, index) => {
-                              const image = item.imagem;
+                      <div ref={scrollContainerRef} className="max-h-[calc(100vh)] py-[14px]">
+                        <div className="flex flex-wrap gap-[28px] mt-[21px]">
+                          {localidadeDoc.data.logo?.map((item, index) => {
+                            const image = item.imagem;
 
-                              return (
-                                image?.url && (
-                                  <div
-                                    key={`logo_image_${index}`}
-                                    className="w-[25%] flex justify-center items-center"
-                                  >
-                                    <Image
-                                      src={image.url}
-                                      alt={image.alt || `Imagem ${index + 1}`}
-                                      width={0}
-                                      height={0}
-                                      sizes="25vw"
-                                      className="w-full h-auto object-contain max-h-24"
-                                    />
-                                  </div>
-                                )
-                              );
-                            })}
-                          </div>
-                        </div>      
+                            return (
+                              image?.url && (
+                                <div
+                                  key={`logo_image_${index}`}
+                                  className="w-[25%] flex justify-center items-center"
+                                >
+                                  <Image
+                                    src={image.url}
+                                    alt={image.alt || `Imagem ${index + 1}`}
+                                    width={0}
+                                    height={0}
+                                    sizes="25vw"
+                                    className="w-full h-auto object-contain max-h-24"
+                                  />
+                                </div>
+                              )
+                            );
+                          })}
+                        </div>
+                      </div>
                     ) : (
                       // Conteúdo alternativo ou apenas o mesmo conteúdo sem o scrollbar
-                      <>
                       <CustomScrollbar direction="vertical">
-                        <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-107px)] py-[14px]">
+                        <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
                           <div className="flex flex-wrap gap-[28px] pt-[28px]">
                             {localidadeDoc.data.logo?.map((item, index) => {
                               const image = item.imagem;
@@ -343,8 +342,8 @@ export default function ArtistsResidencyAndCalendar({
                               );
                             })}
                           </div>
-                        </div>      
-                        </CustomScrollbar></>
+                        </div>
+                      </CustomScrollbar>
                     )}
 
                   </motion.div>

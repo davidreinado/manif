@@ -103,12 +103,12 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
 
       {isMounted && (
         isMobile ? (
-          <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-86px)]">
+          <div ref={scrollContainerRef} className="max-h-[calc(100vh)]">
             <div>{children}</div>
           </div>
         ) : (
           <CustomScrollbar direction="vertical">
-            <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-86px)]">
+            <div ref={scrollContainerRef} className="max-h-[calc(100vh-86px)]">
               <div>{children}</div>
             </div>
           </CustomScrollbar>

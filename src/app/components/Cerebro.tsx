@@ -110,9 +110,9 @@ export default function Cerebro({
   };
 
   const getNavPosition = () => {
-    if (isMobile) {
-      return { left: "14px" };
-    }
+    // if (isMobile) {
+    //   return { left: "14px" };
+    // }
     switch (activeButton) {
       case "Sobre":
         return { left: "14px" };
@@ -124,9 +124,9 @@ export default function Cerebro({
   };
 
   const getTypePosition = () => {
-    if (isMobile) {
-      return { top: "calc(50vh - 7px)" };
-    }
+    // if (isMobile) {
+    //   return { top: "calc(50vh - 7px)" };
+    // }
     switch (selectedType) {
       case "Residências":
         return { top: "calc(50vh + 4px)" };

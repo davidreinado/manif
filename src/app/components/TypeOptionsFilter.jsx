@@ -1,6 +1,5 @@
 "use client";
 import React from 'react'; // Add this import
-import CustomScrollbar from './CustomScrollbar';
 
 export default function TypeOptionsFilter({
   typeOptions,
