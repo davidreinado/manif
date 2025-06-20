@@ -124,6 +124,8 @@
 .scroll-container {
   position: relative;
   -webkit-overflow-scrolling: touch;
+  height: 100vh;      /* or calc(100vh - header) */
+  overflow-y: auto;   /* enable vertical scrolling */
 }
 
 html {
