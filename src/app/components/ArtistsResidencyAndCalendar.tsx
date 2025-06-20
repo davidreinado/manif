@@ -17,6 +17,7 @@ import { useFiltroStore } from "@/app/stores/useFiltroStore";
 import { useThemeStore } from "../stores/useThemeStore";
 import Lenis from '@studio-freight/lenis';
 import CustomScrollbar from '@/app/components/CustomScrollbar';
+import { useIsMobile } from '@/app/hooks/isMobile';
 
 type ArtistsResidencyAndCalendarProps = {
   home: any;
@@ -63,7 +64,7 @@ export default function ArtistsResidencyAndCalendar({
   const lenisRef = useRef<Lenis | null>(null);
   const [backgroundColor, setBackgroundColor] = useState("#808080");
   const primaryColor = useThemeStore((state) => state.primaryColor);
-  const [isMounted, setIsMounted] = useState(false);
+  const isMobile = useIsMobile(); // add this
 
   useEffect(() => {
     primaryColor == "#FC3370" ? setBackgroundColor("rgba(252,51,112,0.3)") : primaryColor == "#FF5A16" ? setBackgroundColor("rgba(255,90,22,0.3)") : primaryColor == "#FAB617" ? setBackgroundColor("rgba(250,182,23,0.3)") : setBackgroundColor("rgba(256,256,256,0.3)")
@@ -88,11 +89,10 @@ export default function ArtistsResidencyAndCalendar({
 
   useEffect(() => {
     if (activeButton === "Apoios" && localidadeDoc)
-      setIsMounted(true);
   }, [activeButton, localidadeDoc]);
 
   useEffect(() => {
-    if (!isMounted || !scrollContainerRef.current) return;
+    if (!isMobile || !scrollContainerRef.current) return;
 
     const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
     const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]') as HTMLElement | null;
@@ -135,7 +135,7 @@ export default function ArtistsResidencyAndCalendar({
       lenis.off('scroll', onLenisScroll); // ✅ Now valid
       lenis.destroy();
     };
-  }, [isMounted]);
+  });
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -314,33 +314,33 @@ export default function ArtistsResidencyAndCalendar({
                         </div>
                       </div>
                     ) : ( */}
-                      <CustomScrollbar direction="vertical">
-                        <div ref={scrollContainerRef} className="max-h-[calc(100vh)] lg:max-h-[calc(100vh-107px)] py-[14px]">
-                          <div className="flex flex-wrap gap-[28px] pt-[28px]">
-                            {localidadeDoc.data.logo?.map((item, index) => {
-                              const image = item.imagem;
+                    <CustomScrollbar direction="vertical">
+                      <div ref={scrollContainerRef} className="max-h-[calc(100vh)] lg:max-h-[calc(100vh-107px)] py-[14px]">
+                        <div className="flex flex-wrap gap-[28px] pt-[28px]">
+                          {localidadeDoc.data.logo?.map((item, index) => {
+                            const image = item.imagem;
 
-                              return (
-                                image?.url && (
-                                  <div
-                                    key={`logo_image_${index}`}
-                                    className="w-[19%] flex justify-center items-center"
-                                  >
-                                    <Image
-                                      src={image.url}
-                                      alt={image.alt || `Imagem ${index + 1}`}
-                                      width={0}
-                                      height={0}
-                                      sizes="(max-width: 768px) 100vw, 20vw"
-                                      className="w-full h-auto object-contain max-h-24"
-                                    />
-                                  </div>
-                                )
-                              );
-                            })}
-                          </div>
+                            return (
+                              image?.url && (
+                                <div
+                                  key={`logo_image_${index}`}
+                                  className="w-[19%] flex justify-center items-center"
+                                >
+                                  <Image
+                                    src={image.url}
+                                    alt={image.alt || `Imagem ${index + 1}`}
+                                    width={0}
+                                    height={0}
+                                    sizes="(max-width: 768px) 100vw, 20vw"
+                                    className="w-full h-auto object-contain max-h-24"
+                                  />
+                                </div>
+                              )
+                            );
+                          })}
                         </div>
-                      </CustomScrollbar>
+                      </div>
+                    </CustomScrollbar>
                     {/* )} */}
 
                   </motion.div>

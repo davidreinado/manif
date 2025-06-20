@@ -1,18 +1,18 @@
 'use client';
+
 import {
   OverlayScrollbarsComponent,
-  type OverlayScrollbarsComponentRef
+  type OverlayScrollbarsComponentRef,
 } from 'overlayscrollbars-react';
 import 'overlayscrollbars/overlayscrollbars.css';
-import { useThemeStore } from '@/app/stores/useThemeStore';
 import {
-  useEffect,
   useRef,
   forwardRef,
-  useState,
   type ReactNode,
-  type CSSProperties
+  type CSSProperties,
 } from 'react';
+
+import { useIsMobile } from '@/app/hooks/isMobile'; // 👈 custom hook
 
 type CustomCSSProperties = CSSProperties & {
   '--os-handle-bg'?: string;
@@ -20,55 +20,24 @@ type CustomCSSProperties = CSSProperties & {
   '--os-handle-bg-active'?: string;
 };
 
-const CustomScrollbar = forwardRef<OverlayScrollbarsComponentRef, {
-  direction?: 'vertical' | 'horizontal';
-  children: ReactNode;
-  className?: string;
-}>(({ children, direction = 'vertical', className = '' }, ref) => {
+const CustomScrollbar = forwardRef<
+  OverlayScrollbarsComponentRef,
+  {
+    direction?: 'vertical' | 'horizontal';
+    children: ReactNode;
+    className?: string;
+  }
+>(({ children, direction = 'vertical', className = '' }, ref) => {
   const osRef = useRef<OverlayScrollbarsComponentRef>(null);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const checkMobile = () => {
-      if (typeof window !== 'undefined') {
-        setIsMobile(window.innerWidth < 768);
-      }
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  useEffect(() => {
-    if (isMobile) return;
-
-    const instance = osRef.current?.osInstance();
-    if (!instance) return;
-
-    const updateScrollbarAppearance = () => {
-      const elements = instance.elements();
-      const handles = [
-        elements.scrollbarHorizontal?.handle,
-        elements.scrollbarVertical?.handle
-      ].filter(Boolean) as HTMLElement[];
-
-      handles.forEach(handle => {
-        handle.classList.add('custom-scrollbar-handle');
-      });
-    };
-
-    updateScrollbarAppearance();
-    const unsubscribe = instance.on('updated', updateScrollbarAppearance);
-    return () => unsubscribe();
-  }, [isMobile]);
+  const isMobile = useIsMobile(); // ✅ reliable mobile check
 
   const scrollbarStyle: CustomCSSProperties = {
     height: '100%',
     width: '100%',
     cursor: direction === 'horizontal' ? 'grab' : 'auto',
-    // '--os-handle-bg': secondaryColor,
-    // '--os-handle-bg-hover': secondaryColor,
-    // '--os-handle-bg-active': secondaryColor,
+    // '--os-handle-bg': '#ccc',
+    // '--os-handle-bg-hover': '#aaa',
+    // '--os-handle-bg-active': '#888',
   };
 
   if (isMobile) {
