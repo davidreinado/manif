@@ -289,7 +289,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
 
                     />
                       <CustomScrollbar direction="vertical">
-                        <div ref={scrollContainerRef} className="overflow-y-auto max-h-[calc(100vh-107px)] py-[14px] scroll-smooth">
+                        <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
                           <div className="flex flex-wrap gap-[28px] pt-[28px]">
                             {localidadeDoc.data.logo?.map((item, index) => {
                               const image = item.imagem;
@@ -330,7 +330,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
         {/* Right Side: Calendar */}
         {filteredLocalidades.length > 0 && filteredAgentes.length > 0 && (
           <motion.div className="w-full lg:w-1/2" style={{ x: calendarXPosition }}>
-            <Calendar
+            {/* <Calendar
               home={home}
               selectedType={selectedType}
               setSelectedType={setSelectedType}
@@ -338,7 +338,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
               localidades={filteredLocalidades}
               agentes={filteredAgentes}
               setActiveButton={setActiveButton}
-            />
+            /> */}
           </motion.div>
         )}
       </div>
