@@ -10,9 +10,10 @@ import {
   forwardRef,
   type ReactNode,
   type CSSProperties,
+  useImperativeHandle,
 } from 'react';
 
-import { useIsMobile } from '@/app/hooks/isMobile'; // 👈 custom hook
+import { useIsMobile } from '@/app/hooks/isMobile';
 
 type CustomCSSProperties = CSSProperties & {
   '--os-handle-bg'?: string;
@@ -21,31 +22,36 @@ type CustomCSSProperties = CSSProperties & {
 };
 
 const CustomScrollbar = forwardRef<
-  OverlayScrollbarsComponentRef,
+  OverlayScrollbarsComponentRef | HTMLDivElement,
   {
     direction?: 'vertical' | 'horizontal';
     children: ReactNode;
     className?: string;
   }
 >(({ children, direction = 'vertical', className = '' }, ref) => {
-  const osRef = useRef<OverlayScrollbarsComponentRef>(null);
-  const isMobile = useIsMobile(); // ✅ reliable mobile check
+  const osRef = useRef<OverlayScrollbarsComponentRef | HTMLDivElement>(null);
+  const isMobile = useIsMobile();
 
+  // Set consistent scrollbar styles for both mobile and desktop
   const scrollbarStyle: CustomCSSProperties = {
     height: '100%',
     width: '100%',
-    cursor: direction === 'horizontal' ? 'grab' : 'auto',
-    // '--os-handle-bg': '#ccc',
-    // '--os-handle-bg-hover': '#aaa',
-    // '--os-handle-bg-active': '#888',
+    overflowY: direction === 'vertical' ? 'auto' : 'hidden',
+    overflowX: direction === 'horizontal' ? 'auto' : 'hidden',
+    WebkitOverflowScrolling: 'touch', // enable momentum scroll on iOS
   };
+
+  useImperativeHandle(ref, () => osRef.current as any);
 
   if (isMobile) {
     return (
       <div
-        ref={ref as any}
+        ref={osRef as any}
         className={`overflow-auto ${className}`}
-        style={scrollbarStyle}
+        style={{
+          ...scrollbarStyle,
+          maxHeight: 'calc(100vh - 107px)', // ✅ CONSTRAIN HEIGHT ON MOBILE
+        }}
       >
         {children}
       </div>
@@ -54,22 +60,23 @@ const CustomScrollbar = forwardRef<
 
   return (
     <OverlayScrollbarsComponent
-      ref={ref || osRef}
+      ref={osRef as any}
       className={`os-theme-tight ${className}`}
       options={{
         scrollbars: {
           visibility: 'auto',
           autoHide: direction === 'horizontal' ? 'never' : 'leave',
           dragScroll: true,
-          clickScroll: false,
         },
         overflow: {
           x: direction === 'horizontal' ? 'scroll' : 'hidden',
           y: direction === 'vertical' ? 'scroll' : 'hidden',
         },
-        paddingAbsolute: false,
       }}
-      style={scrollbarStyle}
+      style={{
+        ...scrollbarStyle,
+        // maxHeight: 'calc(100vh - 107px)', // ✅ CONSTRAIN HEIGHT ON DESKTOP TOO
+      }}
     >
       {children}
     </OverlayScrollbarsComponent>
