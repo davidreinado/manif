@@ -136,7 +136,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
       lenis.off('scroll', onLenisScroll); // ✅ Now valid
       lenis.destroy();
     };
-  }, [isMounted]);
+  }, [isMounted, isMobile]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
