@@ -16,7 +16,7 @@ import Image from "next/image";
 import { useFiltroStore } from "@/app/stores/useFiltroStore";
 import { useThemeStore } from "../stores/useThemeStore";
 import Lenis from '@studio-freight/lenis';
-// import CustomScrollbar from '@/app/components/CustomScrollbar';
+import CustomScrollbar from '@/app/components/CustomScrollbar';
 import { useIsMobile } from "../hooks/isMobile";
 
 type ArtistsResidencyAndCalendarProps = {
@@ -92,51 +92,51 @@ export default function ArtistsResidencyAndCalendar({
       setIsMounted(true);
   }, [activeButton, localidadeDoc]);
 
-//   useEffect(() => {
-// if (!isMounted || !scrollContainerRef.current || isMobile) return;
+  useEffect(() => {
+if (!isMounted || !scrollContainerRef.current || isMobile) return;
 
-//     const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
-//     const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]') as HTMLElement | null;
-//     if (!nativeScrollContainer) return;
+    const osInstance = scrollContainerRef.current.closest('[data-overlayscrollbars]');
+    const nativeScrollContainer = osInstance?.querySelector('[data-overlayscrollbars-viewport]') as HTMLElement | null;
+    if (!nativeScrollContainer) return;
 
-//     const lenis = new Lenis({
-//       wrapper: nativeScrollContainer,
-//       content: nativeScrollContainer.firstElementChild as HTMLElement,
-//       smoothWheel: true,
-//       duration: 1.2,
-//       wheelMultiplier: 1.1,
-//       touchMultiplier: 1.4,
-//       infinite: false,
-//     });
+    const lenis = new Lenis({
+      wrapper: nativeScrollContainer,
+      content: nativeScrollContainer.firstElementChild as HTMLElement,
+      smoothWheel: true,
+      duration: 1.2,
+      wheelMultiplier: 1.1,
+      touchMultiplier: 1.4,
+      infinite: false,
+    });
 
-//     const handleScroll = () => {
-//       if (!frostyRef.current || !nativeScrollContainer) return;
-//       const scrollTop = nativeScrollContainer.scrollTop;
-//       const opacity = Math.min(scrollTop / 30, 1);
-//       frostyRef.current.style.opacity = `${opacity}`;
-//       frostyRef.current.style.willChange = 'opacity';
-//     };
+    const handleScroll = () => {
+      if (!frostyRef.current || !nativeScrollContainer) return;
+      const scrollTop = nativeScrollContainer.scrollTop;
+      const opacity = Math.min(scrollTop / 30, 1);
+      frostyRef.current.style.opacity = `${opacity}`;
+      frostyRef.current.style.willChange = 'opacity';
+    };
 
-//     // ✅ Named wrapper for Lenis scroll event
-//     const onLenisScroll = () => handleScroll();
+    // ✅ Named wrapper for Lenis scroll event
+    const onLenisScroll = () => handleScroll();
 
-//     nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-//     lenis.on('scroll', onLenisScroll);
+    nativeScrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+    lenis.on('scroll', onLenisScroll);
 
-//     lenisRef.current = lenis;
+    lenisRef.current = lenis;
 
-//     const raf = (time: number) => {
-//       lenis.raf(time);
-//       requestAnimationFrame(raf);
-//     };
-//     requestAnimationFrame(raf);
+    const raf = (time: number) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
 
-//     return () => {
-//       nativeScrollContainer.removeEventListener('scroll', handleScroll);
-//       lenis.off('scroll', onLenisScroll); // ✅ Now valid
-//       lenis.destroy();
-//     };
-//   }, [isMounted, isMobile]);
+    return () => {
+      nativeScrollContainer.removeEventListener('scroll', handleScroll);
+      lenis.off('scroll', onLenisScroll); // ✅ Now valid
+      lenis.destroy();
+    };
+  }, [isMounted, isMobile]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -288,8 +288,8 @@ export default function ArtistsResidencyAndCalendar({
                       }}
 
                     />
-                      {/* <CustomScrollbar direction="vertical"> */}
-                        <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
+                      <CustomScrollbar direction="vertical">
+                        <div ref={scrollContainerRef} className="overflow-y-auto max-h-[calc(100vh-107px)] py-[14px] scroll-smooth">
                           <div className="flex flex-wrap gap-[28px] pt-[28px]">
                             {localidadeDoc.data.logo?.map((item, index) => {
                               const image = item.imagem;
@@ -314,7 +314,7 @@ export default function ArtistsResidencyAndCalendar({
                             })}
                           </div>
                         </div>
-                      {/* </CustomScrollbar> */}
+                      </CustomScrollbar>
                   </motion.div>
                 </AnimatePresence>
               </motion.div>
