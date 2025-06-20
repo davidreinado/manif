@@ -330,7 +330,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
         {/* Right Side: Calendar */}
         {filteredLocalidades.length > 0 && filteredAgentes.length > 0 && (
           <motion.div className="w-full lg:w-1/2" style={{ x: calendarXPosition }}>
-            {/* <Calendar
+            <Calendar
               home={home}
               selectedType={selectedType}
               setSelectedType={setSelectedType}
@@ -338,7 +338,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
               localidades={filteredLocalidades}
               agentes={filteredAgentes}
               setActiveButton={setActiveButton}
-            /> */}
+            />
           </motion.div>
         )}
       </div>

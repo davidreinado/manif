@@ -108,7 +108,7 @@ export default function FiltroClientWrapper({ children }: { children: React.Reac
         //   </div>
         // ) : (
           <CustomScrollbar direction="vertical">
-            <div ref={scrollContainerRef} className="max-h-[calc(100vh)] lg:max-h-[calc(100vh-86px)]">
+            <div ref={scrollContainerRef} className="max-h-[calc(100vh-86px)]">
               <div>{children}</div>
             </div>
           </CustomScrollbar>
