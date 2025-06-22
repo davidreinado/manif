@@ -130,8 +130,14 @@
 
 html {
     font-size: 62.5%;
-    /* overflow: hidden; */
+    overflow: hidden;
     scroll-behavior: auto !important;
+}
+
+@media screen and (max-width: 768px) {
+  html {
+    overflow-y: auto; /* enable scrolling on mobile */
+  }
 }
 
 body {
