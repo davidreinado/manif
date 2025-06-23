@@ -52,7 +52,7 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const isMobile = useIsMobile();
 
   const [backgroundColor, setBackgroundColor] = useState("#808080");
-  const [isMobileFilterVisible, setIsMobileFilterVisible] = useState(true);
+  const [isMobileFilterVisible, setIsMobileFilterVisible] = useState(false);
 
   const toggleMobileFilter = () => {
     setIsMobileFilterVisible(prev => !prev);
