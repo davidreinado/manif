@@ -255,7 +255,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
             )}
 
             {activeButton === "Apoios" && localidadeDoc && (
-              <motion.div className="text-[1.2rem] font-medium font-ramboia mt-24 pr-[21px] sticky top-[60px]">
+              <motion.div className="text-[1.2rem] font-medium font-ramboia mt-24 lg:pr-[21px] sticky top-[60px]">
                 <AnimatePresence>
                   <motion.div
                     initial={{ opacity: 0, y: 15 }}
@@ -289,7 +289,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
 
                     />
                       <CustomScrollbar direction="vertical">
-                        <div ref={scrollContainerRef} className="max-h-[calc(100vh-107px)] py-[14px]">
+                        <div ref={scrollContainerRef} className="lg:max-h-[calc(100vh-107px)] py-[14px]">
                           <div className="flex flex-wrap gap-[28px] pt-[28px]">
                             {localidadeDoc.data.logo?.map((item, index) => {
                               const image = item.imagem;
@@ -298,7 +298,7 @@ if (!isMounted || !scrollContainerRef.current || isMobile) return;
                                 image?.url && (
                                   <div
                                     key={`logo_image_${index}`}
-                                    className="w-[19%] flex justify-center items-center"
+                                    className="w-[33%] lg:w-[19%] flex justify-center items-center"
                                   >
                                     <Image
                                       src={image.url}

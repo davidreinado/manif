@@ -50,7 +50,6 @@ const CustomScrollbar = forwardRef<
         className={`overflow-auto ${className}`}
         style={{
           ...scrollbarStyle,
-          maxHeight: 'calc(100vh - 107px)', // ✅ CONSTRAIN HEIGHT ON MOBILE
         }}
       >
         {children}

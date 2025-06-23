@@ -14,6 +14,7 @@ import path from 'path';
 import CombinedFilters from "./CombinedFilters"
 import TypeOptionsFilter from "./TypeOptionsFilter"
 import DistrictsFilter from "./DistrictsFilter"
+import { useIsMobile } from "../hooks/isMobile";
 
 
 export default function Calendar({ home, selectedType, setSelectedType, agenda, localidades: localidadesPages = [], agentes: agentesPages = [], setActiveButton }) {
@@ -48,10 +49,10 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
 
   const secondaryColor = useThemeStore((state) => state.secondaryColor);
   const primaryColor = useThemeStore((state) => state.primaryColor);
+  const isMobile = useIsMobile();
 
   const [backgroundColor, setBackgroundColor] = useState("#808080");
   const [isMobileFilterVisible, setIsMobileFilterVisible] = useState(true);
-  const [isMobile, setIsMobile] = useState(typeof window !== "undefined" && window.innerWidth < 768);
 
   const toggleMobileFilter = () => {
     setIsMobileFilterVisible(prev => !prev);
@@ -131,7 +132,6 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   // Lenis initialization with optimized frosty effect
   useEffect(() => {
     setIsMounted(true);
-    setIsMobile(typeof window !== "undefined" && window.innerWidth < 768)
 
     return () => {
       if (lenisRef.current) {
@@ -205,6 +205,51 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
   const toggleMonth = (month) => {
     setSelectedMonth(prev => prev === month ? null : month);
   };
+
+  const scrollContent = (
+  <div
+    ref={scrollContainerRef}
+    className="lg:h-[calc(100vh-109px)] pt-[14px] relative"
+  >
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
+        className="lg:pr-[18px] pt-[7px]"
+      >
+        {filteredAgenda.length > 0 ? (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+            className="space-y-4"
+          >
+            {[...filteredAgenda].reverse().map((event, index) => (
+              <motion.div
+                key={event.id ?? `event-${index}`}
+                variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
+                transition={{ duration: 0.125, ease: "easeOut" }}
+              >
+                <EventItem event={event} secondaryColor={secondaryColor} />
+              </motion.div>
+            ))}
+          </motion.div>
+        ) : (
+          <motion.p
+            key="empty"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
+          >
+            Nenhum evento encontrado com os filtros selecionados.
+          </motion.p>
+        )}
+      </motion.div>
+    </AnimatePresence>
+  </div>
+);
 
   // Render
   return (
@@ -334,8 +379,8 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
               setSelectedType={setSelectedType}
             />
 
-                        <div className='text-[1.2rem] italic mt-[28px] lg:[mt-0]'>campos de trabalho</div>
-<TypeOptionsFilter
+            <div className='text-[1.2rem] italic mt-[28px] lg:[mt-0]'>campos de trabalho</div>
+            <TypeOptionsFilter
               typeOptions={typeOptions}
               selectedType={selectedType}
               hoveredType={hoveredType}
@@ -408,97 +453,15 @@ export default function Calendar({ home, selectedType, setSelectedType, agenda, 
                       opacity-0 transition-opacity duration-300 will-change-opacity"
           />
 
-      {isMounted && (
-        // isMobile ? (
-        //       <div
-        //         ref={scrollContainerRef}
-        //         className="h-[calc(100vh-109px)] pt-[14px] relative"
-        //       >
-        //         <AnimatePresence mode="wait">
-        //           <motion.div
-        //             key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
-        //             className="pr-[18px]"
-        //           >
-        //             {filteredAgenda.length > 0 ? (
-        //               <motion.div
-        //                 initial="hidden"
-        //                 animate="visible"
-        //                 exit="exit"
-        //                 variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-        //                 className="space-y-4"
-        //               >
-        //                 {[...filteredAgenda].reverse().map((event, index) => (
-        //                   <motion.div
-        //                     key={event.id ?? `event-${index}`}
-        //                     variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
-        //                     transition={{ duration: 0.125, ease: "easeOut" }}
-        //                   >
-        //                     <EventItem event={event} secondaryColor={secondaryColor} />
-        //                   </motion.div>
-        //                 ))}
-        //               </motion.div>
-        //             ) : (
-        //               <motion.p
-        //                 key="empty"
-        //                 initial={{ opacity: 0, y: 10 }}
-        //                 animate={{ opacity: 1, y: 0 }}
-        //                 exit={{ opacity: 0, y: -10 }}
-        //                 transition={{ duration: 0.3 }}
-        //                 className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
-        //               >
-        //                 Nenhum evento encontrado com os filtros selecionados.
-        //               </motion.p>
-        //             )}
-        //           </motion.div>
-        //         </AnimatePresence>
-        //       </div>
-        // ) : (
-            <CustomScrollbar direction="vertical">
-              <div
-                ref={scrollContainerRef}
-                className="h-[calc(100vh-109px)] lg:h-[calc(100vh-109px)] pt-[14px] relative"
-              >
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`${selectedYear}-${selectedMonth}-${selectedDistrict}-${selectedType}-${selectedCombinedFilter?.label}`}
-                    className="pr-[18px] pt-[7px]"
-                  >
-                    {filteredAgenda.length > 0 ? (
-                      <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        exit="exit"
-                        variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-                        className="space-y-4"
-                      >
-                        {[...filteredAgenda].reverse().map((event, index) => (
-                          <motion.div
-                            key={event.id ?? `event-${index}`}
-                            variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -10 } }}
-                            transition={{ duration: 0.125, ease: "easeOut" }}
-                          >
-                            <EventItem event={event} secondaryColor={secondaryColor} />
-                          </motion.div>
-                        ))}
-                      </motion.div>
-                    ) : (
-                      <motion.p
-                        key="empty"
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        transition={{ duration: 0.3 }}
-                        className="text-black py-8 text-[1.2rem] md:text-[1.6rem]"
-                      >
-                        Nenhum evento encontrado com os filtros selecionados.
-                      </motion.p>
-                    )}
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </CustomScrollbar>
-        // )
-      )}
+{isMounted && (
+  isMobile ? (
+    scrollContent
+  ) : (
+    <CustomScrollbar direction="vertical">
+      {scrollContent}
+    </CustomScrollbar>
+  )
+)}
         </div>
       </div>
     </div>
